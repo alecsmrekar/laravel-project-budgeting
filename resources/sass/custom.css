@@ -1,0 +1,19 @@
+.table {
+    display: table;
+
+}
+
+.tr {
+    display: table-row;
+}
+
+.td {
+    display: table-cell;
+    padding: 5px;
+}
+
+@media (min-width: 768px) {
+    .col-md-8 {
+        max-width: 100% !important;
+    }
+}
