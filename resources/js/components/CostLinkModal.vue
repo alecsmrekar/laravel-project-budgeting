@@ -20,6 +20,7 @@ export default {
             all_departments: [],
             all_costs: [],
             errors: [],
+            tree:[],
         }
     },
     mounted() {
@@ -38,10 +39,7 @@ export default {
         loadProjectList: function () {
             this.all_projects = this.loadApiArraySync('/api/projects/all');
         },
-        loadProjectTree: function () {
-            this.loadApiArraySync('/api/projects/tree/' + this.project)
-        },
-        loadApiArraySync: function(endpoint) {
+        loadApiArraySync: function (endpoint) {
             var data = [];
             axios.get(endpoint)
                 .then((response) => {
@@ -97,6 +95,45 @@ export default {
                     currentObj.output = error;
                 });
         },
+        projectChange: async function (event) {
+            if (event.target.value === this.project) {
+                return;
+            }
+            for (var i = 0; i< this.all_departments.length; i++) {
+                this.$delete(this.all_departments, i);
+            }
+            for (var i = 0; i< this.all_costs.length; i++) {
+                this.$delete(this.all_costs, i);
+            }
+            this.project = event.target.value;
+            var endpoint = '/api/projects/tree/' + this.project;
+            var data;
+            await axios.get(endpoint)
+                .then((response) => {
+                    this.all_departments = Object.keys(response.data);
+                    this.all_costs = Object.values(response.data);
+                    data = response.data;
+                    this.tree=response.data;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            for (var i = 0; i< this.all_departments.length; i++) {
+                this.$set(this.all_departments,i, this.all_departments[i]);
+            }
+        },
+        departmentChange: function (event) {
+            for (var i = 0; i< this.all_costs.length; i++) {
+                this.$delete(this.all_costs, i);
+            }
+            var dep_costs = this.tree[this.department];
+            var cnt = 0;
+            for (let id in dep_costs) {
+                console.log(id + ' is ' + dep_costs[id]);
+                this.$set(this.all_costs, cnt, dep_costs[id]);
+                cnt++;
+            }
+        },
         checkForm: async function (e) {
             e.preventDefault();
             if (this.cname && this.cclient) {
@@ -145,33 +182,35 @@ export default {
                 <form>
                     <div class="modal-body">
                         <label>Project:</label>
-                        <select id="project" name="project" v-model="project">
-                            <option v-for="item in all_projects" v-bind:value="item.id">{{item.name}}</option>
+                        <select @change="projectChange($event)" id="project" name="project" v-model="project">
+                            <option v-for="item in all_projects" v-bind:value="item.id">{{ item.name }}</option>
                         </select>
-<br>
+                        <br>
                         <label>Department:</label>
-                        <select id="department" name="department" v-model="department">
-                            <option v-for="item in all_departments" v-bind:value="item.department">{{item.department}}</option>
+                        <select @change="departmentChange($event)" id="department" name="department" v-model="department">
+                            <option v-for="item in all_departments" v-bind:value="item">
+                                {{ item }}
+                            </option>
                         </select>
                         <br>
                         <label>Service:</label>
                         <select id="cost_id" name="cost_id" v-model="cost_id">
-                            <option v-for="item in all_costs" v-bind:value="item.id">{{item.name}}</option>
+                            <option v-for="item in all_costs" v-bind:value="item">{{ item }}</option>
                         </select>
 
                         <br>
                     </div>
 
 
-                <div class="modal-footer">
-                    <button @click="cancelClicked" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        Close
-                    </button>
-                    <button v-if="modal_id > -1" @click="deleteClicked" type="button" class="btn btn-danger">
-                        Delete
-                    </button>
-                    <button @click="submitClicked" type="submit" class="btn btn-primary">Save changes</button>
-                </div>
+                    <div class="modal-footer">
+                        <button @click="cancelClicked" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Close
+                        </button>
+                        <button v-if="modal_id > -1" @click="deleteClicked" type="button" class="btn btn-danger">
+                            Delete
+                        </button>
+                        <button @click="submitClicked" type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
                 </form>
             </div>
         </div>

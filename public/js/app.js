@@ -2112,7 +2112,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       all_projects: [],
       all_departments: [],
       all_costs: [],
-      errors: []
+      errors: [],
+      tree: []
     };
   },
   mounted: function mounted() {
@@ -2130,9 +2131,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     },
     loadProjectList: function loadProjectList() {
       this.all_projects = this.loadApiArraySync('/api/projects/all');
-    },
-    loadProjectTree: function loadProjectTree() {
-      this.loadApiArraySync('/api/projects/tree/' + this.project);
     },
     loadApiArraySync: function loadApiArraySync(endpoint) {
       var data = [];
@@ -2225,17 +2223,87 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         currentObj.output = error;
       });
     },
-    checkForm: function () {
-      var _checkForm = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(e) {
-        var is_new, id, response, endpoint, object;
+    projectChange: function () {
+      var _projectChange = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(event) {
+        var _this = this;
+
+        var i, endpoint, data;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
+                if (!(event.target.value === this.project)) {
+                  _context2.next = 2;
+                  break;
+                }
+
+                return _context2.abrupt("return");
+
+              case 2:
+                for (i = 0; i < this.all_departments.length; i++) {
+                  this.$delete(this.all_departments, i);
+                }
+
+                for (i = 0; i < this.all_costs.length; i++) {
+                  this.$delete(this.all_costs, i);
+                }
+
+                this.project = event.target.value;
+                endpoint = '/api/projects/tree/' + this.project;
+                _context2.next = 8;
+                return axios.get(endpoint).then(function (response) {
+                  _this.all_departments = Object.keys(response.data);
+                  _this.all_costs = Object.values(response.data);
+                  data = response.data;
+                  _this.tree = response.data;
+                })["catch"](function (error) {
+                  console.log(error);
+                });
+
+              case 8:
+                for (i = 0; i < this.all_departments.length; i++) {
+                  this.$set(this.all_departments, i, this.all_departments[i]);
+                }
+
+              case 9:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      function projectChange(_x2) {
+        return _projectChange.apply(this, arguments);
+      }
+
+      return projectChange;
+    }(),
+    departmentChange: function departmentChange(event) {
+      for (var i = 0; i < this.all_costs.length; i++) {
+        this.$delete(this.all_costs, i);
+      }
+
+      var dep_costs = this.tree[this.department];
+      var cnt = 0;
+
+      for (var id in dep_costs) {
+        console.log(id + ' is ' + dep_costs[id]);
+        this.$set(this.all_costs, cnt, dep_costs[id]);
+        cnt++;
+      }
+    },
+    checkForm: function () {
+      var _checkForm = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3(e) {
+        var is_new, id, response, endpoint, object;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
                 e.preventDefault();
 
                 if (!(this.cname && this.cclient)) {
-                  _context2.next = 15;
+                  _context3.next = 15;
                   break;
                 }
 
@@ -2249,7 +2317,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
                   is_new = false;
                 }
 
-                _context2.next = 6;
+                _context3.next = 6;
                 return axios.post(endpoint, {
                   name: this.cname,
                   client: this.cclient,
@@ -2259,18 +2327,18 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
                 });
 
               case 6:
-                response = _context2.sent;
-                _context2.next = 9;
+                response = _context3.sent;
+                _context3.next = 9;
                 return response.data;
 
               case 9:
-                object = _context2.sent;
-                _context2.next = 12;
+                object = _context3.sent;
+                _context3.next = 12;
                 return object.id;
 
               case 12:
-                id = _context2.sent;
-                _context2.next = 15;
+                id = _context3.sent;
+                _context3.next = 15;
                 return this.$emit('exit-with-change', id, is_new, object);
 
               case 15:
@@ -2286,13 +2354,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
               case 18:
               case "end":
-                return _context2.stop();
+                return _context3.stop();
             }
           }
-        }, _callee2, this);
+        }, _callee3, this);
       }));
 
-      function checkForm(_x2) {
+      function checkForm(_x3) {
         return _checkForm.apply(this, arguments);
       }
 
@@ -40283,19 +40351,24 @@ var render = function() {
                   ],
                   attrs: { id: "project", name: "project" },
                   on: {
-                    change: function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.project = $event.target.multiple
-                        ? $$selectedVal
-                        : $$selectedVal[0]
-                    }
+                    change: [
+                      function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.project = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      },
+                      function($event) {
+                        return _vm.projectChange($event)
+                      }
+                    ]
                   }
                 },
                 _vm._l(_vm.all_projects, function(item) {
@@ -40323,27 +40396,34 @@ var render = function() {
                   ],
                   attrs: { id: "department", name: "department" },
                   on: {
-                    change: function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.department = $event.target.multiple
-                        ? $$selectedVal
-                        : $$selectedVal[0]
-                    }
+                    change: [
+                      function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.department = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      },
+                      function($event) {
+                        return _vm.departmentChange($event)
+                      }
+                    ]
                   }
                 },
                 _vm._l(_vm.all_departments, function(item) {
-                  return _c(
-                    "option",
-                    { domProps: { value: item.department } },
-                    [_vm._v(_vm._s(item.department))]
-                  )
+                  return _c("option", { domProps: { value: item } }, [
+                    _vm._v(
+                      "\n                            " +
+                        _vm._s(item) +
+                        "\n                        "
+                    )
+                  ])
                 }),
                 0
               ),
@@ -40381,8 +40461,8 @@ var render = function() {
                   }
                 },
                 _vm._l(_vm.all_costs, function(item) {
-                  return _c("option", { domProps: { value: item.id } }, [
-                    _vm._v(_vm._s(item.name))
+                  return _c("option", { domProps: { value: item } }, [
+                    _vm._v(_vm._s(item))
                   ])
                 }),
                 0

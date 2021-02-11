@@ -35,10 +35,27 @@ class Cost extends Model {
         $output = [];
         foreach ($all as $item) {
             $add=[];
-            $a=1;
-            array_push($data, $add);
+            $dep = $item['department'];
+            $sector = $item['sector'];
+            $service = $item['service'];
+            $person = $item['person'];
+            $company = $item['company'];
+            $service_full_name = $service;
+            if ($sector) {
+                $service_full_name = $sector . ': ' . $service_full_name;
+            }
+            if ($person) {
+                $service_full_name = $service_full_name . ': ' . $person;
+            }
+            if ($company) {
+                $service_full_name = $service_full_name . ' (' . $company . ')';
+            }
+            if (array_key_exists($dep, $output) == False) {
+                $output[$dep] = [];
+            }
+            $output[$dep][$item['id']] = $service_full_name;
         }
-        return $data;
+        return $output;
     }
 
     public static function read_all($project_id): array {
