@@ -32,6 +32,7 @@
 
                         <cost-link-modal v-if="isModalVisible" @exit-no-change="exitNoChange"
                                          @exit-with-change="exitWithChange"
+                                         @exit-with-delete="exitWithDelete"
                                          v-bind:modal_id="modal_id"
                                          v-bind:modal_provider="modal_provider"
                         ></cost-link-modal>
@@ -94,13 +95,26 @@ export default {
             }
             return null;
         },
-        exitWithChange: function () {
+        exitWithChange: function (is_new) {
             this.isModalVisible = false;
+            if (is_new) {
+                this.update_msg = 'Created link on ' + this.modal_provider + ' transaction #' + this.modal_id;
+            }else {
+                this.update_msg = 'Updated link on ' + this.modal_provider + ' transaction #' + this.modal_id;
+            }
             this.update_msg = 'Updated link on ' + this.modal_provider + ' transaction #' + this.modal_id;
             var ID_to_update = this.findId(this.modal_id, this.modal_provider);
             this.modal_id = -1;
             this.modal_provider = '';
             //this.$set(this.transactions, ID_to_update, object);
+        },
+        exitWithDelete: function (provider, id) {
+            this.isModalVisible = false;
+            this.update_msg = 'Deleted link on ' + provider + ' transaction #' + id;
+            var ID_to_update = this.findId(id, provider);
+            this.modal_id = -1;
+            this.modal_provider = '';
+            // todo fix table info on this transaction
         },
         sortTran: function (arr) {
             // Set slice() to avoid to generate an infinite loop!

@@ -87,7 +87,7 @@ class ApiController extends Controller {
         return Response::HTTP_BAD_REQUEST;
     }
 
-    public function updateLink(Request $request, $id) {
+    public function updateLink(Request $request, $provider, $id) {
         if (is_numeric($id)) {
             $id = intval($id);
             $input = $request->all();
@@ -96,6 +96,7 @@ class ApiController extends Controller {
         }
         return Response::HTTP_BAD_REQUEST;
     }
+
 
     public function getAllProjects(Request $request) {
         return Models\Project::read_all();

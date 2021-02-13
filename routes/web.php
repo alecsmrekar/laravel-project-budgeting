@@ -22,8 +22,9 @@ Route::post('/api/projects/update/{id}', 'App\Http\Controllers\ApiController@upd
 Route::post('/api/projects/delete/{id}', 'App\Http\Controllers\ApiController@deleteProject')->middleware('auth')->name('api_project_delete');
 
 Route::get('/api/links/all/{provider}/{id}', 'App\Http\Controllers\ApiController@getLinks')->middleware('auth')->name('api_get_links');
-Route::get('/api/links/create', 'App\Http\Controllers\ApiController@createLink')->middleware('auth')->name('api_links_create');
-Route::post('/api/costs/update/{provider}/{id}', 'App\Http\Controllers\ApiController@updateCost')->middleware('auth')->name('api_link_update');
+Route::post('/api/links/create', 'App\Http\Controllers\ApiController@createLink')->middleware('auth')->name('api_links_create');
+Route::post('/api/links/update/{provider}/{id}', 'App\Http\Controllers\ApiController@updateLink')->middleware('auth')->name('api_link_update');
+Route::post('/api/links/delete/{id}', 'App\Http\Controllers\ApiController@deleteLink')->middleware('auth')->name('api_link_delete');
 
 Route::get('/api/costs/all/{id}', 'App\Http\Controllers\ApiController@getAllCosts')->middleware('auth')->name('api_get_all_costs');
 Route::get('/api/projects/tree/{id}', 'App\Http\Controllers\ApiController@getTree')->middleware('auth')->name('api_get_tree');

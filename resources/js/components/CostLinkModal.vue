@@ -14,27 +14,77 @@ export default {
     data: function () {
         return {
             project: -1,
+            link_id: -1,
             department: '',
             cost_id: -1,
             all_projects: [],
             all_departments: [],
             all_costs: [],
+            filtered_costs: [],
             errors: [],
-            tree:[],
+            tree: [],
         }
     },
     mounted() {
         this.loadProjectList();
+        this.findExistingLink();
     },
     methods: {
+        findExistingLink: async function () {
+            var endpoint = '/api/links/all/' + this.modal_provider + '/' + this.modal_id;
+            var data = await this.loadApiArrayAsync(endpoint);
+            if (data.length > 0) {
+                this.link_id = data[0]['id'];
+                this.project = data[0]['project_id'];
+                this.cost_id = data[0]['cost_id'];
+
+                await this.loadTree(this.project);
+                this.department = data[0]['department'];
+                var dep_costs = await this.tree[this.department];
+                var cnt = 0;
+                for (let id in dep_costs) {
+                    const item = {
+                        'id': id,
+                        'name': dep_costs[id],
+                    };
+                    this.filtered_costs.push(item);
+                }
+            }
+        },
         cancelClicked: function () {
-            this.$emit('exit-no-change', true)
+            this.$emit('exit-no-change', true);
         },
         deleteClicked: function () {
-            this.$emit('exit-no-change', true)
+            const endpoint = '/api/links/delete/' + this.link_id;
+            axios.post(endpoint, {})
+                .then(function (response) {})
+                .catch(function (error) {
+                    console.log(error);
+                });
+            this.$emit('exit-with-delete', this.modal_provider, this.modal_id);
         },
-        submitClicked: function () {
-            this.$emit('exit-with-change', true)
+        submitClicked: async function (e) {
+            e.preventDefault();
+            if (this.project && this.cost_id && this.modal_provider) {
+                var endpoint;
+                var is_new;
+                if (this.link_id === -1) {
+                    endpoint = '/api/links/create';
+                    is_new = true;
+                } else {
+                    endpoint = '/api/links/update/' + this.modal_provider + '/' + this.link_id;
+                    is_new = false;
+                }
+                var response = await axios.post(endpoint, {
+                    cost_id: this.cost_id,
+                    transaction_id: this.modal_id,
+                    provider: this.modal_provider,
+                })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+            await this.$emit('exit-with-change', this.modal_id, this.is_new)
         },
         loadProjectList: function () {
             this.all_projects = this.loadApiArraySync('/api/projects/all');
@@ -95,79 +145,51 @@ export default {
                     currentObj.output = error;
                 });
         },
-        projectChange: async function (event) {
-            if (event.target.value === this.project) {
-                return;
-            }
-            for (var i = 0; i< this.all_departments.length; i++) {
+        loadTree: async function (project_id) {
+            for (var i = 0; i < this.all_departments.length; i++) {
                 this.$delete(this.all_departments, i);
             }
-            for (var i = 0; i< this.all_costs.length; i++) {
-                this.$delete(this.all_costs, i);
+            for (var i = 0; i < this.filtered_costs.length; i++) {
+                this.$delete(this.filtered_costs, i);
             }
-            this.project = event.target.value;
             var endpoint = '/api/projects/tree/' + this.project;
             var data;
             await axios.get(endpoint)
                 .then((response) => {
                     this.all_departments = Object.keys(response.data);
                     this.all_costs = Object.values(response.data);
-                    data = response.data;
-                    this.tree=response.data;
+                    this.tree = response.data;
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
-            for (var i = 0; i< this.all_departments.length; i++) {
-                this.$set(this.all_departments,i, this.all_departments[i]);
+            for (var i = 0; i < this.all_departments.length; i++) {
+                this.$set(this.all_departments, i, this.all_departments[i]);
             }
         },
-        departmentChange: function (event) {
-            for (var i = 0; i< this.all_costs.length; i++) {
-                this.$delete(this.all_costs, i);
+        projectChange: async function (event) {
+            if (event.target.value === this.project) {
+                return;
+            }
+            this.cost_id = -1;
+            this.department = '';
+            this.loadTree(event.target.value);
+        },
+        departmentChange: function (event=false) {
+            for (var i = 0; i < this.filtered_costs.length; i++) {
+                this.$delete(this.filtered_costs, i);
             }
             var dep_costs = this.tree[this.department];
             var cnt = 0;
             for (let id in dep_costs) {
-                console.log(id + ' is ' + dep_costs[id]);
-                this.$set(this.all_costs, cnt, dep_costs[id]);
+                const item = {
+                    'id': id,
+                    'name': dep_costs[id],
+                };
+                this.$set(this.filtered_costs, cnt, item);
                 cnt++;
             }
         },
-        checkForm: async function (e) {
-            e.preventDefault();
-            if (this.cname && this.cclient) {
-                var is_new;
-                var id = this.modal_id;
-                var response;
-                var endpoint;
-                if (this.modal_id === -1) {
-                    endpoint = '/api/projects/create';
-                    is_new = true;
-                } else {
-                    endpoint = '/api/projects/update/' + this.modal_id;
-                    is_new = false;
-                }
-                response = await axios.post(endpoint, {
-                    name: this.cname,
-                    client: this.cclient,
-                    active: this.active
-                })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-                const object = await response.data;
-                id = await object.id;
-                await this.$emit('exit-with-change', id, is_new, object);
-            }
-            this.errors = [];
-            if (!this.cname) {
-                this.errors.push('Name required.');
-            }
-            if (!this.cclient) {
-                this.errors.push('Client required.');
-            }
-        }
     },
 };
 </script>
@@ -187,7 +209,8 @@ export default {
                         </select>
                         <br>
                         <label>Department:</label>
-                        <select @change="departmentChange($event)" id="department" name="department" v-model="department">
+                        <select @change="departmentChange($event)" id="department" name="department"
+                                v-model="department">
                             <option v-for="item in all_departments" v-bind:value="item">
                                 {{ item }}
                             </option>
@@ -195,7 +218,7 @@ export default {
                         <br>
                         <label>Service:</label>
                         <select id="cost_id" name="cost_id" v-model="cost_id">
-                            <option v-for="item in all_costs" v-bind:value="item">{{ item }}</option>
+                            <option v-for="item in filtered_costs" v-bind:value="item.id">{{ item.name }}</option>
                         </select>
 
                         <br>
@@ -206,7 +229,7 @@ export default {
                         <button @click="cancelClicked" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             Close
                         </button>
-                        <button v-if="modal_id > -1" @click="deleteClicked" type="button" class="btn btn-danger">
+                        <button v-if="link_id > -1" @click="deleteClicked" type="button" class="btn btn-danger" data-bs-dismiss="modal">
                             Delete
                         </button>
                         <button @click="submitClicked" type="submit" class="btn btn-primary">Save changes</button>

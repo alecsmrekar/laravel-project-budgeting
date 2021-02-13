@@ -2082,15 +2082,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 
 
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
 function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'CostLinkModal',
@@ -2107,28 +2107,140 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   data: function data() {
     return {
       project: -1,
+      link_id: -1,
       department: '',
       cost_id: -1,
       all_projects: [],
       all_departments: [],
       all_costs: [],
+      filtered_costs: [],
       errors: [],
       tree: []
     };
   },
   mounted: function mounted() {
     this.loadProjectList();
+    this.findExistingLink();
   },
   methods: {
+    findExistingLink: function () {
+      var _findExistingLink = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+        var endpoint, data, dep_costs, cnt, id, item;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                endpoint = '/api/links/all/' + this.modal_provider + '/' + this.modal_id;
+                _context.next = 3;
+                return this.loadApiArrayAsync(endpoint);
+
+              case 3:
+                data = _context.sent;
+
+                if (!(data.length > 0)) {
+                  _context.next = 16;
+                  break;
+                }
+
+                this.link_id = data[0]['id'];
+                this.project = data[0]['project_id'];
+                this.cost_id = data[0]['cost_id'];
+                _context.next = 10;
+                return this.loadTree(this.project);
+
+              case 10:
+                this.department = data[0]['department'];
+                _context.next = 13;
+                return this.tree[this.department];
+
+              case 13:
+                dep_costs = _context.sent;
+                cnt = 0;
+
+                for (id in dep_costs) {
+                  item = {
+                    'id': id,
+                    'name': dep_costs[id]
+                  };
+                  this.filtered_costs.push(item);
+                }
+
+              case 16:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function findExistingLink() {
+        return _findExistingLink.apply(this, arguments);
+      }
+
+      return findExistingLink;
+    }(),
     cancelClicked: function cancelClicked() {
       this.$emit('exit-no-change', true);
     },
     deleteClicked: function deleteClicked() {
-      this.$emit('exit-no-change', true);
+      var endpoint = '/api/links/delete/' + this.link_id;
+      axios.post(endpoint, {}).then(function (response) {})["catch"](function (error) {
+        console.log(error);
+      });
+      this.$emit('exit-with-delete', this.modal_provider, this.modal_id);
     },
-    submitClicked: function submitClicked() {
-      this.$emit('exit-with-change', true);
-    },
+    submitClicked: function () {
+      var _submitClicked = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(e) {
+        var endpoint, is_new, response;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                e.preventDefault();
+
+                if (!(this.project && this.cost_id && this.modal_provider)) {
+                  _context2.next = 6;
+                  break;
+                }
+
+                if (this.link_id === -1) {
+                  endpoint = '/api/links/create';
+                  is_new = true;
+                } else {
+                  endpoint = '/api/links/update/' + this.modal_provider + '/' + this.link_id;
+                  is_new = false;
+                }
+
+                _context2.next = 5;
+                return axios.post(endpoint, {
+                  cost_id: this.cost_id,
+                  transaction_id: this.modal_id,
+                  provider: this.modal_provider
+                })["catch"](function (error) {
+                  console.log(error);
+                });
+
+              case 5:
+                response = _context2.sent;
+
+              case 6:
+                _context2.next = 8;
+                return this.$emit('exit-with-change', this.modal_id, this.is_new);
+
+              case 8:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      function submitClicked(_x) {
+        return _submitClicked.apply(this, arguments);
+      }
+
+      return submitClicked;
+    }(),
     loadProjectList: function loadProjectList() {
       this.all_projects = this.loadApiArraySync('/api/projects/all');
     },
@@ -2154,14 +2266,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       return data;
     },
     loadApiArrayAsync: function () {
-      var _loadApiArrayAsync = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(endpoint) {
+      var _loadApiArrayAsync = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3(endpoint) {
         var data;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
                 data = [];
-                _context.next = 3;
+                _context3.next = 3;
                 return axios.get(endpoint).then(function (response) {
                   var _iterator2 = _createForOfIteratorHelper(response.data),
                       _step2;
@@ -2181,17 +2293,17 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
                 });
 
               case 3:
-                return _context.abrupt("return", data);
+                return _context3.abrupt("return", data);
 
               case 4:
               case "end":
-                return _context.stop();
+                return _context3.stop();
             }
           }
-        }, _callee);
+        }, _callee3);
       }));
 
-      function loadApiArrayAsync(_x) {
+      function loadApiArrayAsync(_x2) {
         return _loadApiArrayAsync.apply(this, arguments);
       }
 
@@ -2223,149 +2335,103 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         currentObj.output = error;
       });
     },
-    projectChange: function () {
-      var _projectChange = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(event) {
+    loadTree: function () {
+      var _loadTree = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4(project_id) {
         var _this = this;
 
         var i, endpoint, data;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context2.prev = _context2.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
-                if (!(event.target.value === this.project)) {
-                  _context2.next = 2;
-                  break;
-                }
-
-                return _context2.abrupt("return");
-
-              case 2:
                 for (i = 0; i < this.all_departments.length; i++) {
                   this.$delete(this.all_departments, i);
                 }
 
-                for (i = 0; i < this.all_costs.length; i++) {
-                  this.$delete(this.all_costs, i);
+                for (i = 0; i < this.filtered_costs.length; i++) {
+                  this.$delete(this.filtered_costs, i);
                 }
 
-                this.project = event.target.value;
                 endpoint = '/api/projects/tree/' + this.project;
-                _context2.next = 8;
+                _context4.next = 5;
                 return axios.get(endpoint).then(function (response) {
                   _this.all_departments = Object.keys(response.data);
                   _this.all_costs = Object.values(response.data);
-                  data = response.data;
                   _this.tree = response.data;
                 })["catch"](function (error) {
                   console.log(error);
                 });
 
-              case 8:
+              case 5:
                 for (i = 0; i < this.all_departments.length; i++) {
                   this.$set(this.all_departments, i, this.all_departments[i]);
                 }
 
-              case 9:
+              case 6:
               case "end":
-                return _context2.stop();
+                return _context4.stop();
             }
           }
-        }, _callee2, this);
+        }, _callee4, this);
       }));
 
-      function projectChange(_x2) {
+      function loadTree(_x3) {
+        return _loadTree.apply(this, arguments);
+      }
+
+      return loadTree;
+    }(),
+    projectChange: function () {
+      var _projectChange = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee5(event) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                if (!(event.target.value === this.project)) {
+                  _context5.next = 2;
+                  break;
+                }
+
+                return _context5.abrupt("return");
+
+              case 2:
+                this.cost_id = -1;
+                this.department = '';
+                this.loadTree(event.target.value);
+
+              case 5:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5, this);
+      }));
+
+      function projectChange(_x4) {
         return _projectChange.apply(this, arguments);
       }
 
       return projectChange;
     }(),
-    departmentChange: function departmentChange(event) {
-      for (var i = 0; i < this.all_costs.length; i++) {
-        this.$delete(this.all_costs, i);
+    departmentChange: function departmentChange() {
+      var event = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+      for (var i = 0; i < this.filtered_costs.length; i++) {
+        this.$delete(this.filtered_costs, i);
       }
 
       var dep_costs = this.tree[this.department];
       var cnt = 0;
 
       for (var id in dep_costs) {
-        console.log(id + ' is ' + dep_costs[id]);
-        this.$set(this.all_costs, cnt, dep_costs[id]);
+        var item = {
+          'id': id,
+          'name': dep_costs[id]
+        };
+        this.$set(this.filtered_costs, cnt, item);
         cnt++;
       }
-    },
-    checkForm: function () {
-      var _checkForm = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3(e) {
-        var is_new, id, response, endpoint, object;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                e.preventDefault();
-
-                if (!(this.cname && this.cclient)) {
-                  _context3.next = 15;
-                  break;
-                }
-
-                id = this.modal_id;
-
-                if (this.modal_id === -1) {
-                  endpoint = '/api/projects/create';
-                  is_new = true;
-                } else {
-                  endpoint = '/api/projects/update/' + this.modal_id;
-                  is_new = false;
-                }
-
-                _context3.next = 6;
-                return axios.post(endpoint, {
-                  name: this.cname,
-                  client: this.cclient,
-                  active: this.active
-                })["catch"](function (error) {
-                  console.log(error);
-                });
-
-              case 6:
-                response = _context3.sent;
-                _context3.next = 9;
-                return response.data;
-
-              case 9:
-                object = _context3.sent;
-                _context3.next = 12;
-                return object.id;
-
-              case 12:
-                id = _context3.sent;
-                _context3.next = 15;
-                return this.$emit('exit-with-change', id, is_new, object);
-
-              case 15:
-                this.errors = [];
-
-                if (!this.cname) {
-                  this.errors.push('Name required.');
-                }
-
-                if (!this.cclient) {
-                  this.errors.push('Client required.');
-                }
-
-              case 18:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3, this);
-      }));
-
-      function checkForm(_x3) {
-        return _checkForm.apply(this, arguments);
-      }
-
-      return checkForm;
-    }()
+    }
   }
 });
 
@@ -3112,6 +3178,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
@@ -3177,12 +3244,26 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       return null;
     },
-    exitWithChange: function exitWithChange() {
+    exitWithChange: function exitWithChange(is_new) {
       this.isModalVisible = false;
+
+      if (is_new) {
+        this.update_msg = 'Created link on ' + this.modal_provider + ' transaction #' + this.modal_id;
+      } else {
+        this.update_msg = 'Updated link on ' + this.modal_provider + ' transaction #' + this.modal_id;
+      }
+
       this.update_msg = 'Updated link on ' + this.modal_provider + ' transaction #' + this.modal_id;
       var ID_to_update = this.findId(this.modal_id, this.modal_provider);
       this.modal_id = -1;
       this.modal_provider = ''; //this.$set(this.transactions, ID_to_update, object);
+    },
+    exitWithDelete: function exitWithDelete(provider, id) {
+      this.isModalVisible = false;
+      this.update_msg = 'Deleted link on ' + provider + ' transaction #' + id;
+      var ID_to_update = this.findId(id, provider);
+      this.modal_id = -1;
+      this.modal_provider = ''; // todo fix table info on this transaction
     },
     sortTran: function sortTran(arr) {
       // Set slice() to avoid to generate an infinite loop!
@@ -40460,9 +40541,9 @@ var render = function() {
                     }
                   }
                 },
-                _vm._l(_vm.all_costs, function(item) {
-                  return _c("option", { domProps: { value: item } }, [
-                    _vm._v(_vm._s(item))
+                _vm._l(_vm.filtered_costs, function(item) {
+                  return _c("option", { domProps: { value: item.id } }, [
+                    _vm._v(_vm._s(item.name))
                   ])
                 }),
                 0
@@ -40486,12 +40567,12 @@ var render = function() {
                 ]
               ),
               _vm._v(" "),
-              _vm.modal_id > -1
+              _vm.link_id > -1
                 ? _c(
                     "button",
                     {
                       staticClass: "btn btn-danger",
-                      attrs: { type: "button" },
+                      attrs: { type: "button", "data-bs-dismiss": "modal" },
                       on: { click: _vm.deleteClicked }
                     },
                     [
@@ -41232,7 +41313,8 @@ var render = function() {
                     },
                     on: {
                       "exit-no-change": _vm.exitNoChange,
-                      "exit-with-change": _vm.exitWithChange
+                      "exit-with-change": _vm.exitWithChange,
+                      "exit-with-delete": _vm.exitWithDelete
                     }
                   })
                 : _vm._e()
