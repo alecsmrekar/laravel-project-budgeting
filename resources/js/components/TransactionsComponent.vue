@@ -4,7 +4,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Home Page2</div>
+                    <div class="card-header">Transaction List</div>
 
                     <div class="card-body">
                         <div v-if="update_msg" class="alert alert-success" role="alert">
@@ -19,11 +19,14 @@
                             </tr>
 
                             <tr v-for="transaction in sortTran(transactions)">
-                                <td v-for="data in transaction">{{ data }}</td>
-                                <td>
-                                    <button @click="openModal(transaction.id, transaction.provider)" type="button"
-                                            class="btn btn-primary">Edit</button>
-
+                                <td v-for="(data, key) in transaction">
+                                    <span v-if="key != 'status'"> {{ data }}</span>
+                                    <span v-else>
+                                        <button v-if="transaction.status == 'Linked'" @click="openModal(transaction.id, transaction.provider)" type="button"
+                                                class="btn btn-secondary">Edit Link</button>
+                                        <button v-else @click="openModal(transaction.id, transaction.provider)" type="button"
+                                                class="btn btn-success">Add Link</button>
+                                    </span>
                                 </td>
                             </tr>
 
@@ -65,7 +68,6 @@ export default {
                 'counterparty': 'Counterparty',
                 'currency': 'Currency',
                 'provider': 'Provider',
-                'status': 'Status'
             },
             render: [],
             modal_id: -1,
@@ -106,22 +108,26 @@ export default {
             var ID_to_update = this.findId(this.modal_id, this.modal_provider);
             this.modal_id = -1;
             this.modal_provider = '';
-            //this.$set(this.transactions, ID_to_update, object);
+            console.log(ID_to_update);
+            let updated = this.transactions[ID_to_update];
+            updated.status = 'Linked';
+            this.$set(this.transactions, ID_to_update, updated);
         },
         exitWithDelete: function (provider, id) {
             this.isModalVisible = false;
             this.update_msg = 'Deleted link on ' + provider + ' transaction #' + id;
             var ID_to_update = this.findId(id, provider);
+            console.log(ID_to_update);
+            let updated = this.transactions[ID_to_update];
+            updated.status = 'Not Linked';
+            this.$set(this.transactions, ID_to_update, updated);
             this.modal_id = -1;
             this.modal_provider = '';
-            // todo fix table info on this transaction
         },
         sortTran: function (arr) {
             // Set slice() to avoid to generate an infinite loop!
             return arr.slice().sort(
                 (a, b) => b.number - a.number)
-
-            // (a, b) => a.department.localeCompare(b.department) || a.sector.localeCompare(b.sector));
         },
         generateHeaders() {
             if (Object.keys(this.transactions).length) {

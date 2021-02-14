@@ -3179,6 +3179,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
@@ -3199,8 +3202,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         'amount': 'Amount',
         'counterparty': 'Counterparty',
         'currency': 'Currency',
-        'provider': 'Provider',
-        'status': 'Status'
+        'provider': 'Provider'
       },
       render: [],
       modal_id: -1,
@@ -3256,20 +3258,28 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.update_msg = 'Updated link on ' + this.modal_provider + ' transaction #' + this.modal_id;
       var ID_to_update = this.findId(this.modal_id, this.modal_provider);
       this.modal_id = -1;
-      this.modal_provider = ''; //this.$set(this.transactions, ID_to_update, object);
+      this.modal_provider = '';
+      console.log(ID_to_update);
+      var updated = this.transactions[ID_to_update];
+      updated.status = 'Linked';
+      this.$set(this.transactions, ID_to_update, updated);
     },
     exitWithDelete: function exitWithDelete(provider, id) {
       this.isModalVisible = false;
       this.update_msg = 'Deleted link on ' + provider + ' transaction #' + id;
       var ID_to_update = this.findId(id, provider);
+      console.log(ID_to_update);
+      var updated = this.transactions[ID_to_update];
+      updated.status = 'Not Linked';
+      this.$set(this.transactions, ID_to_update, updated);
       this.modal_id = -1;
-      this.modal_provider = ''; // todo fix table info on this transaction
+      this.modal_provider = '';
     },
     sortTran: function sortTran(arr) {
       // Set slice() to avoid to generate an infinite loop!
       return arr.slice().sort(function (a, b) {
         return b.number - a.number;
-      }); // (a, b) => a.department.localeCompare(b.department) || a.sector.localeCompare(b.sector));
+      });
     },
     generateHeaders: function generateHeaders() {
       if (Object.keys(this.transactions).length) {
@@ -41230,7 +41240,9 @@ var render = function() {
     _c("div", { staticClass: "row justify-content-center" }, [
       _c("div", { staticClass: "col-md-8" }, [
         _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "card-header" }, [_vm._v("Home Page2")]),
+          _c("div", { staticClass: "card-header" }, [
+            _vm._v("Transaction List")
+          ]),
           _vm._v(" "),
           _c(
             "div",
@@ -41274,31 +41286,48 @@ var render = function() {
                   _vm._l(_vm.sortTran(_vm.transactions), function(transaction) {
                     return _c(
                       "tr",
-                      [
-                        _vm._l(transaction, function(data) {
-                          return _c("td", [_vm._v(_vm._s(data))])
-                        }),
-                        _vm._v(" "),
-                        _c("td", [
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-primary",
-                              attrs: { type: "button" },
-                              on: {
-                                click: function($event) {
-                                  return _vm.openModal(
-                                    transaction.id,
-                                    transaction.provider
-                                  )
-                                }
-                              }
-                            },
-                            [_vm._v("Edit")]
-                          )
+                      _vm._l(transaction, function(data, key) {
+                        return _c("td", [
+                          key != "status"
+                            ? _c("span", [_vm._v(" " + _vm._s(data))])
+                            : _c("span", [
+                                transaction.status == "Linked"
+                                  ? _c(
+                                      "button",
+                                      {
+                                        staticClass: "btn btn-secondary",
+                                        attrs: { type: "button" },
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.openModal(
+                                              transaction.id,
+                                              transaction.provider
+                                            )
+                                          }
+                                        }
+                                      },
+                                      [_vm._v("Edit Link")]
+                                    )
+                                  : _c(
+                                      "button",
+                                      {
+                                        staticClass: "btn btn-success",
+                                        attrs: { type: "button" },
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.openModal(
+                                              transaction.id,
+                                              transaction.provider
+                                            )
+                                          }
+                                        }
+                                      },
+                                      [_vm._v("Add Link")]
+                                    )
+                              ])
                         ])
-                      ],
-                      2
+                      }),
+                      0
                     )
                   })
                 ],
