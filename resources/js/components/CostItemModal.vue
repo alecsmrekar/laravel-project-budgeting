@@ -24,6 +24,8 @@ export default {
             service: 'test',
             person: '',
             company: '',
+            manual_actuals: 0,
+            tag: '',
             budget: 1,
             tax_rate: 0.5,
             final: 0,
@@ -32,6 +34,7 @@ export default {
         }
     },
     methods: {
+        // Called on mounted: if modal_id is predetermined, load it
         loadCostItem() {
             if (this.modal_id !== -1) {
                 axios.get('/api/costs/id/' + this.modal_id)
@@ -44,12 +47,15 @@ export default {
                         this.tax_rate = response.data.tax_rate * 100;
                         this.final = response.data.final;
                         this.comment = response.data.comment;
+                        this.manual_actuals = response.data.manual_actuals;
+                        this.tag = response.data.manual_actuals_tag;
                     })
                     .catch(function (error) {
                         console.log(error);
                     });
             }
         },
+        // Deleted the DB entry and emits
         deleteClicked: async function () {
             const endpoint = '/api/costs/delete/' + this.modal_id;
             const response = await axios.post(endpoint, {})
@@ -58,9 +64,11 @@ export default {
                 });
             await this.$emit('exit-delete', this.modal_id);
         },
+        // Just emit
         cancelClicked: function () {
             this.$emit('exit-no-change', true);
         },
+        // Form submit: do the validation and either create new or update existing
         checkForm: async function (e) {
             e.preventDefault();
             if (this.service && this.budget && (this.tax_rate || this.tax_rate === 0)) {
@@ -85,7 +93,9 @@ export default {
                     budget: this.budget,
                     tax_rate: this.tax_rate / 100,
                     final: this.final,
-                    comment: this.comment
+                    comment: this.comment,
+                    manual_actuals: (this.manual_actuals ? this.manual_actuals : 0),
+                    manual_actuals_tag: this.tag
                 })
                     .catch(function (error) {
                         console.log(error);
@@ -106,18 +116,6 @@ export default {
             if (this.tax_rate !== '0' || isNaN(this.tax_rate)) {
                 this.errors.push('Tax Rate required.');
             }
-        },
-        depAutocomplete: function (input) {
-            if (input.length < 1) { return [] }
-            var departments = [];
-            for (var id in this.all_costs) {
-                departments.push(this.all_costs[id].department);
-            }
-            departments = [...new Set(departments)];
-            return departments.filter(department => {
-                return department.toLowerCase()
-                    .startsWith(input.toLowerCase())
-            })
         },
     },
 };
@@ -157,6 +155,10 @@ export default {
                         <input type="text" id="tax_rate" name="tax_rate" v-model="tax_rate" required><br>
                         <label>Comment:</label><br>
                         <input type="text" id="comment" name="comment" v-model="comment"><br>
+                        <label>Manual actual cost entry:</label><br>
+                        <input type="text" id="manual_actuals" name="manual_actuals" v-model="manual_actuals"><br>
+                        <label>Manual cost tag:</label><br>
+                        <input type="text" id="tag" name="tag" v-model="tag"><br>
                         <label>Set cost to be final:</label><br>
                         <input type="checkbox" id="final" name="final" v-model="final"
                                :checked="final"><br>

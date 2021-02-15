@@ -1860,18 +1860,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 
 
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -1901,6 +1889,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       service: 'test',
       person: '',
       company: '',
+      manual_actuals: 0,
+      tag: '',
       budget: 1,
       tax_rate: 0.5,
       "final": 0,
@@ -1909,6 +1899,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     };
   },
   methods: {
+    // Called on mounted: if modal_id is predetermined, load it
     loadCostItem: function loadCostItem() {
       var _this = this;
 
@@ -1922,11 +1913,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           _this.tax_rate = response.data.tax_rate * 100;
           _this["final"] = response.data["final"];
           _this.comment = response.data.comment;
+          _this.manual_actuals = response.data.manual_actuals;
+          _this.tag = response.data.manual_actuals_tag;
         })["catch"](function (error) {
           console.log(error);
         });
       }
     },
+    // Deleted the DB entry and emits
     deleteClicked: function () {
       var _deleteClicked = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
         var endpoint, response;
@@ -1959,9 +1953,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       return deleteClicked;
     }(),
+    // Just emit
     cancelClicked: function cancelClicked() {
       this.$emit('exit-no-change', true);
     },
+    // Form submit: do the validation and either create new or update existing
     checkForm: function () {
       var _checkForm = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(e) {
         var is_new, id, response, endpoint, object;
@@ -1997,7 +1993,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   budget: this.budget,
                   tax_rate: this.tax_rate / 100,
                   "final": this["final"],
-                  comment: this.comment
+                  comment: this.comment,
+                  manual_actuals: this.manual_actuals ? this.manual_actuals : 0,
+                  manual_actuals_tag: this.tag
                 })["catch"](function (error) {
                   console.log(error);
                 });
@@ -2045,23 +2043,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
 
       return checkForm;
-    }(),
-    depAutocomplete: function depAutocomplete(input) {
-      if (input.length < 1) {
-        return [];
-      }
-
-      var departments = [];
-
-      for (var id in this.all_costs) {
-        departments.push(this.all_costs[id].department);
-      }
-
-      departments = _toConsumableArray(new Set(departments));
-      return departments.filter(function (department) {
-        return department.toLowerCase().startsWith(input.toLowerCase());
-      });
-    }
+    }()
   }
 });
 
@@ -2727,7 +2709,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         'budget': 'Budget (EUR)',
         'tax_rate': 'Tax Rate %',
         'final': 'Is Final?',
-        'comment': 'Comment'
+        'comment': 'Comment',
+        'actuals': 'Actual Cost',
+        'diff': 'Diff vs Budget'
       },
       render: []
     };
@@ -2743,6 +2727,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.render = Object.keys(this.translate);
     },
     generateHeaders: function generateHeaders() {
+      console.log(this.costs);
+
       if (Object.keys(this.costs).length) {
         this.headers = [];
         var ids = Object.keys(this.costs);
@@ -2829,6 +2815,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           _iterator2.f();
         }
 
+        console.log(_this.costs);
+
         _this.generateHeaders();
       })["catch"](function (error) {
         console.log(error);
@@ -2862,6 +2850,12 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           console.log(error);
         });
       }
+
+      axios.get('/api/actuals/project/' + this.id).then(function (response) {
+        console.log(response.data);
+      })["catch"](function (error) {
+        console.log(error);
+      });
     }
   }
 });
@@ -40296,6 +40290,60 @@ var render = function() {
                       return
                     }
                     _vm.comment = $event.target.value
+                  }
+                }
+              }),
+              _c("br"),
+              _vm._v(" "),
+              _c("label", [_vm._v("Manual actual cost entry:")]),
+              _c("br"),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.manual_actuals,
+                    expression: "manual_actuals"
+                  }
+                ],
+                attrs: {
+                  type: "text",
+                  id: "manual_actuals",
+                  name: "manual_actuals"
+                },
+                domProps: { value: _vm.manual_actuals },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.manual_actuals = $event.target.value
+                  }
+                }
+              }),
+              _c("br"),
+              _vm._v(" "),
+              _c("label", [_vm._v("Manual cost tag:")]),
+              _c("br"),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.tag,
+                    expression: "tag"
+                  }
+                ],
+                attrs: { type: "text", id: "tag", name: "tag" },
+                domProps: { value: _vm.tag },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.tag = $event.target.value
                   }
                 }
               }),

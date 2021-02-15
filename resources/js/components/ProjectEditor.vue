@@ -33,7 +33,9 @@ export default {
                 'budget': 'Budget (EUR)',
                 'tax_rate': 'Tax Rate %',
                 'final': 'Is Final?',
-                'comment': 'Comment'
+                'comment': 'Comment',
+                'actuals': 'Actual Cost',
+                'diff': 'Diff vs Budget'
             },
             render: [],
         }
@@ -50,6 +52,7 @@ export default {
             this.render = Object.keys(this.translate);
         },
         generateHeaders() {
+            console.log(this.costs);
             if (Object.keys(this.costs).length) {
                 this.headers = [];
                 var ids = Object.keys(this.costs);
@@ -107,7 +110,9 @@ export default {
                 .then((response) => {
                     for (const item of response.data) {
                         this.costs.push(item);
+
                     }
+                    console.log(this.costs);
                     this.generateHeaders();
                 })
                 .catch(function (error) {
@@ -140,6 +145,13 @@ export default {
                         console.log(error);
                     });
             }
+            axios.get('/api/actuals/project/' + this.id)
+                .then((response) => {
+                    console.log(response.data);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
         },
     },
 };
