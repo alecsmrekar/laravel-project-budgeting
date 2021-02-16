@@ -8,11 +8,11 @@ class Transaction extends Model
 {
     public static function read_all(): array {
         $provider_list = [
-            'Revolut' => new Revolut()
+            'Revolut' => Revolut::class
         ];
         $transactions = [];
         foreach ($provider_list as $key => $provider) {
-            $transactions = array_merge($transactions, $provider->read_local_transactions());
+            $transactions = array_merge($transactions, $provider::read_local_transactions());
         }
         return $transactions;
     }

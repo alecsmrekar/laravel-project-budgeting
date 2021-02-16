@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Engines;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Cost extends Model {
     use HasFactory;
 
-    // Returns one item converted into an object
+    // move to cashflow engine
     public static function read_one($id) {
         $data = self::where('id', $id)->first();
         $providers = [
@@ -81,8 +82,40 @@ class Cost extends Model {
         return $output;
     }
 
-    // Return all costs in a project
-    public static function read_all($project_id): array {
+    public static function get_project_costs($project_id) {
+        $data = [];
+        $manual_actuals = [];
+        $actuals_field = self::get_actuals_field();
+        $query = self::query()
+            ->where('project_id', $project_id)->get();
+        foreach ($query as $item) {
+            $add = self::obj_to_array($item);
+            array_push($data, $add);
+
+            $manual_actuals[$add['id']]['manual'] = $add[$actuals_field];
+            $manual_actuals[$add['id']]['budget'] = $add['budget'];
+        }
+
+        $actuals = Engines\CashflowEngine::get_project_actuals($project_id, $manual_actuals);
+        foreach ($data as $key => $item) {
+            $cid = $item['id'];
+            $data[$key]['actuals'] = 0;
+            $data[$key]['diff'] = $item['budget'];
+            if (array_key_exists($cid, $actuals)) {
+                $data[$key]['actuals'] = $actuals[$cid]['actuals'];
+                $data[$key]['diff'] = $actuals[$cid]['diff'];
+            }
+        }
+        return $data;
+    }
+
+    public static function get_actuals_field() {
+        return 'manual_actuals';
+    }
+
+// move to cashflow engine
+    public
+    static function read_all($project_id): array {
         $data = [];
         $query = self::query()
             ->where('project_id', $project_id)->get();
@@ -112,25 +145,29 @@ class Cost extends Model {
         return $data;
     }
 
-    // Update a cost
-    public static function update_cost($data) {
+// Update a cost
+    public
+    static function update_cost($data) {
         $cost = self::find($data['id']);
         return self::write($data, $cost);
     }
 
-    // Delete a cost
-    public static function delete_cost($id) {
+// Delete a cost
+    public
+    static function delete_cost($id) {
         $item = self::find($id);
         $item->delete();
     }
 
-    // Create a cost
-    public static function create($data) {
+// Create a cost
+    public
+    static function create($data) {
         return self::write($data);
     }
 
-    // Write to the DB. Either new or update existing.
-    public static function write(array $data, $cost = FALSE) {
+// Write to the DB. Either new or update existing.
+    public
+    static function write(array $data, $cost = FALSE) {
         if ($cost == FALSE) {
             $cost = new self();
         }

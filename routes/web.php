@@ -14,6 +14,7 @@ Route::post('/settings/manage_users', 'App\Http\Controllers\ManageUsersControlle
 
 Route::view('/transactions', 'transactions_list')->middleware('auth')->name('transactions_list');
 Route::get('/api/transactions/all', 'App\Http\Controllers\ApiController@getAllTransactions')->middleware('auth')->name('api_get_all');
+Route::get('/api/transactions/all2', 'App\Http\Controllers\ProviderController@read_transactions')->middleware('auth')->name('api_get_all2');
 
 Route::get('/api/projects/all', 'App\Http\Controllers\ApiController@getAllProjects')->middleware('auth')->name('api_get_all_projects');
 Route::get('/api/projects/id/{id}', 'App\Http\Controllers\ApiController@getProject')->middleware('auth')->name('api_get_project');
@@ -31,6 +32,7 @@ Route::get('/api/actuals/cost/{id}', 'App\Http\Controllers\ApiController@getCost
 Route::get('/api/actuals/all', 'App\Http\Controllers\ApiController@getAllActuals')->middleware('auth')->name('api_get_all_actuals');
 
 Route::get('/api/costs/all/{id}', 'App\Http\Controllers\ApiController@getAllCosts')->middleware('auth')->name('api_get_all_costs');
+Route::get('/api/costs/all2/{id}', 'App\Http\Controllers\ApiController@getAllCosts2')->middleware('auth')->name('api_get_all_costs2');
 Route::get('/api/projects/tree/{id}', 'App\Http\Controllers\ApiController@getTree')->middleware('auth')->name('api_get_tree');
 Route::get('/api/costs/id/{id}', 'App\Http\Controllers\ApiController@getCost')->middleware('auth')->name('api_get_cost');
 Route::post('/api/costs/create', 'App\Http\Controllers\ApiController@createCost')->middleware('auth')->name('api_cost_create');

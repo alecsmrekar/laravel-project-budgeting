@@ -94,19 +94,8 @@ export default {
             }
             return null;
         },
-        fetchOne(id) {
-            var data = [];
-            axios.get('/api/costs/id/' + id)
-                .then((response) => {
-                    data = response.data;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            return data;
-        },
         loadTransactions: function () {
-            axios.get('/api/costs/all/' + this.id)
+            axios.get('/api/costs/all2/' + this.id)
                 .then((response) => {
                     for (const item of response.data) {
                         this.costs.push(item);

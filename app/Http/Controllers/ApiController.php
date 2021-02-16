@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models;
+use App\Engines;
 use Symfony\Component\HttpFoundation\Response;
 
 class ApiController extends Controller {
@@ -50,6 +51,14 @@ class ApiController extends Controller {
         if (is_numeric($project_id)) {
             $project_id = intval($project_id);
             return Models\Cost::read_all($project_id);
+        }
+        return Response::HTTP_BAD_REQUEST;
+    }
+
+    public function getAllCosts2(Request $request, $project_id) {
+        if (is_numeric($project_id)) {
+            $project_id = intval($project_id);
+            return Models\Cost::get_project_costs($project_id);
         }
         return Response::HTTP_BAD_REQUEST;
     }

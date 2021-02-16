@@ -9,6 +9,20 @@ use App\Models;
 class CostLink extends Model {
     use HasFactory;
 
+    public static function link_cost_to_transactions($pid){
+        $data = [];
+        //$manual_field = Cost::get_actuals_field();
+        $query = self::query()
+            ->join('costs', 'cost_links.cost_id', '=', 'costs.id')
+            ->where('costs.project_id', '=', $pid)
+            ->select('cost_links.*')
+            ->get();
+        foreach ($query as $item) {
+            array_push($data, $item->attributes);
+        }
+        return $data;
+    }
+
     // Returns a an array transactions links
     public static function get_transaction_links($provider, $id) {
         $data = [];
@@ -23,6 +37,28 @@ class CostLink extends Model {
             array_push($data, $add);
         }
         return $data;
+    }
+
+    public static function get_all_links() {
+        $data = self::all();
+        $all = [];
+        foreach ($data as $item) {
+            array_push($all, $item->attributes);
+        }
+        return $all;
+    }
+
+    public static function get_linked_transactions() {
+        $data = self::all();
+        $all = [];
+        foreach ($data as $item) {
+            $provider = $item->attributes['provider'];
+            if (!array_key_exists($provider, $all)) {
+                $all[$provider] = [];
+            }
+            array_push($all[$provider], $item->attributes['transaction_id']);
+        }
+        return $all;
     }
 
     // Create a link

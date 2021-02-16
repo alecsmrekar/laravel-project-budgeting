@@ -2787,19 +2787,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       return null;
     },
-    fetchOne: function fetchOne(id) {
-      var data = [];
-      axios.get('/api/costs/id/' + id).then(function (response) {
-        data = response.data;
-      })["catch"](function (error) {
-        console.log(error);
-      });
-      return data;
-    },
     loadTransactions: function loadTransactions() {
       var _this = this;
 
-      axios.get('/api/costs/all/' + this.id).then(function (response) {
+      axios.get('/api/costs/all2/' + this.id).then(function (response) {
         var _iterator2 = _createForOfIteratorHelper(response.data),
             _step2;
 
@@ -3176,6 +3167,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
@@ -3296,7 +3288,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     loadTransactions: function loadTransactions() {
       var _this = this;
 
-      axios.get('/api/transactions/all').then(function (response) {
+      axios.get('/api/transactions/all2').then(function (response) {
         var _iterator2 = _createForOfIteratorHelper(response.data),
             _step2;
 
@@ -41334,48 +41326,56 @@ var render = function() {
                   _vm._l(_vm.sortTran(_vm.transactions), function(transaction) {
                     return _c(
                       "tr",
-                      _vm._l(transaction, function(data, key) {
-                        return _c("td", [
-                          key != "status"
-                            ? _c("span", [_vm._v(" " + _vm._s(data))])
-                            : _c("span", [
-                                transaction.status == "Linked"
-                                  ? _c(
-                                      "button",
-                                      {
-                                        staticClass: "btn btn-secondary",
-                                        attrs: { type: "button" },
-                                        on: {
-                                          click: function($event) {
-                                            return _vm.openModal(
-                                              transaction.id,
-                                              transaction.provider
-                                            )
-                                          }
-                                        }
-                                      },
-                                      [_vm._v("Edit Link")]
-                                    )
-                                  : _c(
-                                      "button",
-                                      {
-                                        staticClass: "btn btn-success",
-                                        attrs: { type: "button" },
-                                        on: {
-                                          click: function($event) {
-                                            return _vm.openModal(
-                                              transaction.id,
-                                              transaction.provider
-                                            )
-                                          }
-                                        }
-                                      },
-                                      [_vm._v("Add Link")]
-                                    )
+                      [
+                        _vm._l(transaction, function(data, key) {
+                          return _vm.render.includes(key)
+                            ? _c("td", [
+                                _vm._v(
+                                  "\n                                " +
+                                    _vm._s(data) +
+                                    "\n\n                            "
+                                )
                               ])
+                            : _vm._e()
+                        }),
+                        _vm._v(" "),
+                        _c("td", [
+                          transaction.status == "Linked"
+                            ? _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-secondary",
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.openModal(
+                                        transaction.number,
+                                        transaction.provider
+                                      )
+                                    }
+                                  }
+                                },
+                                [_vm._v("Edit Link")]
+                              )
+                            : _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-success",
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.openModal(
+                                        transaction.number,
+                                        transaction.provider
+                                      )
+                                    }
+                                  }
+                                },
+                                [_vm._v("Add Link")]
+                              )
                         ])
-                      }),
-                      0
+                      ],
+                      2
                     )
                   })
                 ],

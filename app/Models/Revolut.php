@@ -4,33 +4,29 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Interfaces\ProviderInterface;
 
-class Revolut extends Model {
+class Revolut extends Model implements ProviderInterface{
     use HasFactory;
 
     protected $table = 'transactions_revolut';
 
     public static function obj_to_array($item, $actuals=false) {
-        $base = [
-            'id' => $item->number,
-            'time' => $item->time,
-            'type' => $item->type,
-            'account' => $item->account,
-            'amount' => $item->amount,
-            'counterparty' => $item->counterparty,
-            'currency' => $item->currency,
-            'provider' => 'Revolut',
-            'status' => ($item->lid ? 'Linked' : 'Not Linked'),
-        ];
-        if ($actuals) {
-            $base['cid'] = $item->cid;
-            $base['pid'] = $item->pid;
-            $base['sector'] = $item->sector;
-            $base['department'] = $item->department;
+        $base = $item->attributes;
+        if (isset($base['lid'])) {
+            $base['status'] = ($base['lid'] ? 'Linked' : 'Not Linked');
+        }
+        $base['provider'] = self::get_id();
+        if (array_key_exists('created_at', $base)) {
+            unset($base['created_at']);
+        }
+        if (array_key_exists('updated_at', $base)) {
+            unset($base['updated_at']);
         }
         return $base;
     }
 
+    // move to cashflow engine
     public static function get_cost_actuals($cid) {
         $items = [];
         $query = self::query_actuals(false, $cid);
@@ -41,6 +37,7 @@ class Revolut extends Model {
         return $items;
     }
 
+    // move to cashflow engine
     public static function get_project_actuals($id) {
         $items = [];
         $query = self::query_actuals($pid=$id);
@@ -51,6 +48,7 @@ class Revolut extends Model {
         return $items;
     }
 
+    // move to cashflow engine
     public static function get_all_actuals() {
         $items = [];
         $query = self::query_actuals();
@@ -61,6 +59,7 @@ class Revolut extends Model {
         return $items;
     }
 
+    // move to cashflow engine
     private static function query_actuals($pid = FALSE, $cid = FALSE) {
         $query = self::query();
         $provider = 'Revolut';
@@ -86,7 +85,8 @@ class Revolut extends Model {
         return $query->get();
     }
 
-    public function read_local_transactions() {
+    // todo think about integration
+    public static function read_local_transactions() {
         $items = [];
         $provider = 'Revolut';
         $query = self::query()
@@ -101,5 +101,23 @@ class Revolut extends Model {
             array_push($items, $add);
         }
         return $items;
+    }
+
+    // todo think about integration
+    public static function read_local_transactions2() {
+        $items = [];
+        foreach (self::all() as $item) {
+            $add = self::obj_to_array($item);
+            array_push($items, $add);
+        }
+        return $items;
+    }
+
+    public static function get_id() {
+        return 'Revolut';
+    }
+
+    public static function get_table_id_field() {
+        return 'number';
     }
 }

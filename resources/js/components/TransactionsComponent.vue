@@ -19,14 +19,15 @@
                             </tr>
 
                             <tr v-for="transaction in sortTran(transactions)">
-                                <td v-for="(data, key) in transaction">
-                                    <span v-if="key != 'status'"> {{ data }}</span>
-                                    <span v-else>
-                                        <button v-if="transaction.status == 'Linked'" @click="openModal(transaction.id, transaction.provider)" type="button"
-                                                class="btn btn-secondary">Edit Link</button>
-                                        <button v-else @click="openModal(transaction.id, transaction.provider)" type="button"
-                                                class="btn btn-success">Add Link</button>
-                                    </span>
+                                <td v-for="(data, key) in transaction"  v-if="render.includes(key)">
+                                    {{ data }}
+
+                                </td>
+                                <td>
+                                    <button v-if="transaction.status == 'Linked'" @click="openModal(transaction.number, transaction.provider)" type="button"
+                                            class="btn btn-secondary">Edit Link</button>
+                                    <button v-else @click="openModal(transaction.number, transaction.provider)" type="button"
+                                            class="btn btn-success">Add Link</button>
                                 </td>
                             </tr>
 
@@ -147,7 +148,7 @@ export default {
             this.render = Object.keys(this.translate);
         },
         loadTransactions: function () {
-            axios.get('/api/transactions/all')
+            axios.get('/api/transactions/all2')
                 .then((response) => {
                     for (const item of response.data) {
                         this.transactions.push(item);
