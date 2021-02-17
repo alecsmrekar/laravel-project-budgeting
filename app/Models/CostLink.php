@@ -10,13 +10,15 @@ class CostLink extends Model {
     use HasFactory;
 
     // Find costs within a projects which are linked to transactions
-    public static function link_cost_to_transactions($pid){
+    public static function link_cost_to_transactions($pid, $cid=false){
         $data = [];
-        $query = self::query()
-            ->join('costs', 'cost_links.cost_id', '=', 'costs.id')
-            ->where('costs.project_id', '=', $pid)
-            ->select('cost_links.*')
-            ->get();
+        $query = self::query()->join('costs', 'cost_links.cost_id', '=', 'costs.id');
+            $query->where('costs.project_id', '=', $pid);
+            if ($cid) {
+                $query->where('costs.id', '=', $cid);
+            }
+            $query->select('cost_links.*');
+            $query->get();
         foreach ($query as $item) {
             array_push($data, $item->attributes);
         }

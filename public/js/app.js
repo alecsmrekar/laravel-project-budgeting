@@ -1890,6 +1890,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       person: '',
       company: '',
       manual_actuals: 0,
+      manual_actuals_date: '',
       tag: '',
       budget: 1,
       tax_rate: 0.5,
@@ -1915,6 +1916,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           _this.comment = response.data.comment;
           _this.manual_actuals = response.data.manual_actuals;
           _this.tag = response.data.manual_actuals_tag;
+          _this.manual_actuals_date = response.data.manual_actuals_date;
         })["catch"](function (error) {
           console.log(error);
         });
@@ -1966,9 +1968,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context2.prev = _context2.next) {
               case 0:
                 e.preventDefault();
+                this.errors = [];
 
-                if (!(this.service && this.budget && (this.tax_rate || this.tax_rate === 0))) {
-                  _context2.next = 15;
+                if (!this.service) {
+                  this.errors.push('Service required.');
+                }
+
+                if (!this.budget || isNaN(this.budget)) {
+                  this.errors.push('Budget required.');
+                }
+
+                if (!this.tax_rate === '0' || isNaN(this.tax_rate)) {
+                  this.errors.push('Tax Rate required.');
+                }
+
+                if (this.manual_actuals != 0 && !this.manual_actuals_date) {
+                  this.errors.push('Enter a date for the manual cost.');
+                }
+
+                if (!(this.errors.length === 0)) {
+                  _context2.next = 20;
                   break;
                 }
 
@@ -1982,7 +2001,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   is_new = false;
                 }
 
-                _context2.next = 6;
+                _context2.next = 11;
                 return axios.post(endpoint, {
                   department: this.department,
                   project_id: this.project_id,
@@ -1995,42 +2014,28 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   "final": this["final"],
                   comment: this.comment,
                   manual_actuals: this.manual_actuals ? this.manual_actuals : 0,
-                  manual_actuals_tag: this.tag
+                  manual_actuals_tag: this.tag,
+                  manual_actuals_date: this.manual_actuals_date
                 })["catch"](function (error) {
                   console.log(error);
                 });
 
-              case 6:
+              case 11:
                 response = _context2.sent;
-                _context2.next = 9;
+                _context2.next = 14;
                 return response.data;
 
-              case 9:
+              case 14:
                 object = _context2.sent;
-                _context2.next = 12;
+                _context2.next = 17;
                 return object.id;
 
-              case 12:
+              case 17:
                 id = _context2.sent;
-                _context2.next = 15;
+                _context2.next = 20;
                 return this.$emit('exit-with-change', id, is_new, object);
 
-              case 15:
-                this.errors = [];
-
-                if (!this.service) {
-                  this.errors.push('Service required.');
-                }
-
-                if (!this.budget || isNaN(this.budget)) {
-                  this.errors.push('Budget required.');
-                }
-
-                if (this.tax_rate !== '0' || isNaN(this.tax_rate)) {
-                  this.errors.push('Tax Rate required.');
-                }
-
-              case 19:
+              case 20:
               case "end":
                 return _context2.stop();
             }
@@ -2727,8 +2732,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.render = Object.keys(this.translate);
     },
     generateHeaders: function generateHeaders() {
-      console.log(this.costs);
-
       if (Object.keys(this.costs).length) {
         this.headers = [];
         var ids = Object.keys(this.costs);
@@ -2804,8 +2807,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           _iterator2.f();
         }
 
-        console.log(_this.costs);
-
         _this.generateHeaders();
       })["catch"](function (error) {
         console.log(error);
@@ -2839,12 +2840,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           console.log(error);
         });
       }
-
-      axios.get('/api/actuals/project/' + this.id).then(function (response) {
-        console.log(response.data);
-      })["catch"](function (error) {
-        console.log(error);
-      });
     }
   }
 });
@@ -40296,6 +40291,35 @@ var render = function() {
                       return
                     }
                     _vm.manual_actuals = $event.target.value
+                  }
+                }
+              }),
+              _c("br"),
+              _vm._v(" "),
+              _c("label", [_vm._v("Manual cost date:")]),
+              _c("br"),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.manual_actuals_date,
+                    expression: "manual_actuals_date"
+                  }
+                ],
+                attrs: {
+                  type: "date",
+                  id: "manual_actuals_date",
+                  name: "manual_actuals_date"
+                },
+                domProps: { value: _vm.manual_actuals_date },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.manual_actuals_date = $event.target.value
                   }
                 }
               }),

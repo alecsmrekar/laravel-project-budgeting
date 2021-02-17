@@ -52,7 +52,6 @@ export default {
             this.render = Object.keys(this.translate);
         },
         generateHeaders() {
-            console.log(this.costs);
             if (Object.keys(this.costs).length) {
                 this.headers = [];
                 var ids = Object.keys(this.costs);
@@ -99,7 +98,6 @@ export default {
                         this.costs.push(item);
 
                     }
-                    console.log(this.costs);
                     this.generateHeaders();
                 })
                 .catch(function (error) {
@@ -132,13 +130,6 @@ export default {
                         console.log(error);
                     });
             }
-            axios.get('/api/actuals/project/' + this.id)
-                .then((response) => {
-                    console.log(response.data);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
         },
     },
 };

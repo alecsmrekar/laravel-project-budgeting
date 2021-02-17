@@ -25,6 +25,7 @@ export default {
             person: '',
             company: '',
             manual_actuals: 0,
+            manual_actuals_date: '',
             tag: '',
             budget: 1,
             tax_rate: 0.5,
@@ -49,6 +50,7 @@ export default {
                         this.comment = response.data.comment;
                         this.manual_actuals = response.data.manual_actuals;
                         this.tag = response.data.manual_actuals_tag;
+                        this.manual_actuals_date = response.data.manual_actuals_date;
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -71,7 +73,23 @@ export default {
         // Form submit: do the validation and either create new or update existing
         checkForm: async function (e) {
             e.preventDefault();
-            if (this.service && this.budget && (this.tax_rate || this.tax_rate === 0)) {
+
+            this.errors = [];
+            if (!this.service) {
+                this.errors.push('Service required.');
+            }
+            if (!this.budget || isNaN(this.budget)) {
+                this.errors.push('Budget required.');
+            }
+            if (!this.tax_rate === '0' || isNaN(this.tax_rate)) {
+                this.errors.push('Tax Rate required.');
+            }
+
+            if (this.manual_actuals != 0 && !this.manual_actuals_date) {
+                this.errors.push('Enter a date for the manual cost.');
+            }
+
+            if (this.errors.length === 0) {
                 var is_new;
                 var id = this.modal_id;
                 var response;
@@ -95,7 +113,8 @@ export default {
                     final: this.final,
                     comment: this.comment,
                     manual_actuals: (this.manual_actuals ? this.manual_actuals : 0),
-                    manual_actuals_tag: this.tag
+                    manual_actuals_tag: this.tag,
+                    manual_actuals_date: this.manual_actuals_date,
                 })
                     .catch(function (error) {
                         console.log(error);
@@ -104,17 +123,6 @@ export default {
                 const object = await response.data;
                 id = await object.id;
                 await this.$emit('exit-with-change', id, is_new, object);
-            }
-            this.errors = [];
-
-            if (!this.service) {
-                this.errors.push('Service required.');
-            }
-            if (!this.budget || isNaN(this.budget)) {
-                this.errors.push('Budget required.');
-            }
-            if (this.tax_rate !== '0' || isNaN(this.tax_rate)) {
-                this.errors.push('Tax Rate required.');
             }
         },
     },
@@ -157,6 +165,8 @@ export default {
                         <input type="text" id="comment" name="comment" v-model="comment"><br>
                         <label>Manual actual cost entry:</label><br>
                         <input type="text" id="manual_actuals" name="manual_actuals" v-model="manual_actuals"><br>
+                        <label>Manual cost date:</label><br>
+                        <input type="date" id="manual_actuals_date" name="manual_actuals_date" v-model="manual_actuals_date"><br>
                         <label>Manual cost tag:</label><br>
                         <input type="text" id="tag" name="tag" v-model="tag"><br>
                         <label>Set cost to be final:</label><br>

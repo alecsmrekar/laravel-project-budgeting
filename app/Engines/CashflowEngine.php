@@ -12,7 +12,7 @@ class CashflowEngine {
     // use the provider controller to read actuals
     // use the cost model to read manuals
 
-    public static function get_project_actuals($project_id, $cost_data) {
+    public static function get_actuals($project_id, $cost_data, $cid=false) {
         $cost_links = Models\CostLink::link_cost_to_transactions($project_id);
         $keyed_transactions = [];
         $register = ProviderController::$register;
@@ -47,5 +47,4 @@ class CashflowEngine {
         }
         return $output;
     }
-
 }
