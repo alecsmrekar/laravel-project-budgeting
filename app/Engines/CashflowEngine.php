@@ -41,7 +41,6 @@ class CashflowEngine {
             $actuals = $item['manual'] + $item['transactions'];
             $diff = $item['budget'] - $actuals;
             $output[$key] = [
-                'budget' => $item['budget'],
                 'actuals' => $actuals,
                 'diff' => $diff,
             ];

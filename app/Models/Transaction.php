@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
+    // todo obsolete, used by /api/transactions/all
     public static function read_all(): array {
         $provider_list = [
             'Revolut' => Revolut::class

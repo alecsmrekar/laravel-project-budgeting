@@ -138,8 +138,6 @@ export default {
                 for (var key in first_item) {
                     if (key in this.translate) {
                         this.headers.push(this.translate[key]);
-                    } else {
-                        this.headers.push(key);
                     }
                 }
             }

@@ -2737,8 +2737,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         for (var key in first_item) {
           if (key in this.translate) {
             this.headers.push(this.translate[key]);
-          } else {
-            this.headers.push(key);
           }
         }
       }
@@ -3039,17 +3037,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       return null;
     },
-    loadHeaders: function loadHeaders() {
-      var _this = this;
-
-      axios.get('/api/projects/headers').then(function (response) {
-        _this.headers = response.data;
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    },
     loadTransactions: function loadTransactions() {
-      var _this2 = this;
+      var _this = this;
 
       axios.get('/api/projects/all').then(function (response) {
         var _iterator2 = _createForOfIteratorHelper(response.data),
@@ -3059,7 +3048,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
             var item = _step2.value;
 
-            _this2.projects.push(item);
+            _this.projects.push(item);
           }
         } catch (err) {
           _iterator2.e(err);
@@ -3067,7 +3056,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           _iterator2.f();
         }
 
-        _this2.generateHeaders();
+        _this.generateHeaders();
       })["catch"](function (error) {
         console.log(error);
       });
@@ -3081,8 +3070,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         for (var key in first_item) {
           if (key in this.translate) {
             this.headers.push(this.translate[key]);
-          } else {
-            this.headers.push(key);
           }
         }
       }
@@ -3276,8 +3263,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         for (var key in first_item) {
           if (key in this.translate) {
             this.headers.push(this.translate[key]);
-          } else {
-            this.headers.push(key);
           }
         }
       }

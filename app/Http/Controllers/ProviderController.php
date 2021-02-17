@@ -12,9 +12,12 @@ class ProviderController {
         'Revolut' => Models\Revolut::class,
     ];
 
+    // Returns an array of all existing transactions from providers and marks the linked ones
     public static function read_transactions($find_links=true) {
         $all_items = [];
         $links = [];
+
+        // If true, we want to mark the transactions which have links
         if ($find_links) {
             $links = Models\CostLink::get_linked_transactions();
         }

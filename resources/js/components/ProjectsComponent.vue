@@ -139,15 +139,6 @@ export default {
             }
             return null;
         },
-        loadHeaders: function () {
-            axios.get('/api/projects/headers')
-                .then((response) => {
-                    this.headers = response.data;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-        },
         loadTransactions: function () {
             axios.get('/api/projects/all')
                 .then((response) => {
@@ -168,8 +159,6 @@ export default {
                 for (var key in first_item) {
                     if (key in this.translate) {
                         this.headers.push(this.translate[key]);
-                    } else {
-                        this.headers.push(key);
                     }
                 }
             }

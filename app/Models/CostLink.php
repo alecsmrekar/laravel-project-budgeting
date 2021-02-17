@@ -9,9 +9,9 @@ use App\Models;
 class CostLink extends Model {
     use HasFactory;
 
+    // Find costs within a projects which are linked to transactions
     public static function link_cost_to_transactions($pid){
         $data = [];
-        //$manual_field = Cost::get_actuals_field();
         $query = self::query()
             ->join('costs', 'cost_links.cost_id', '=', 'costs.id')
             ->where('costs.project_id', '=', $pid)
@@ -23,7 +23,7 @@ class CostLink extends Model {
         return $data;
     }
 
-    // Returns a an array transactions links
+    // Returns all links that have been added onto a single transaction
     public static function get_transaction_links($provider, $id) {
         $data = [];
         $query = self::query()
@@ -39,15 +39,7 @@ class CostLink extends Model {
         return $data;
     }
 
-    public static function get_all_links() {
-        $data = self::all();
-        $all = [];
-        foreach ($data as $item) {
-            array_push($all, $item->attributes);
-        }
-        return $all;
-    }
-
+    // Returns an array of transactions id (per provider) which have links
     public static function get_linked_transactions() {
         $data = self::all();
         $all = [];
@@ -96,15 +88,6 @@ class CostLink extends Model {
 
     // Convert an object to an array
     public static function obj_to_array($item) {
-        return [
-            'id' => $item->id,
-            'cost_id' => $item->cost_id,
-            'transaction_id' => $item->transaction_id,
-            'provider' => $item->provider,
-            'amount' => $item->amount,
-            'project_id' => $item->project_id,
-            'department' => $item->department,
-            'service' => $item->service,
-        ];
+        return (array) $item->attributes;
     }
 }
