@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models;
+use App\Http\Controllers;
 use App\Engines;
+use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpFoundation\Response;
 
 class ApiController extends Controller {
@@ -51,7 +53,7 @@ class ApiController extends Controller {
     public function getAllCosts2(Request $request, $project_id) {
         if (is_numeric($project_id)) {
             $project_id = intval($project_id);
-            return Models\Cost::get_costs($project_id);
+            return CostController::get_costs($project_id);
         }
         return Response::HTTP_BAD_REQUEST;
     }
@@ -59,7 +61,7 @@ class ApiController extends Controller {
     public function getCost(Request $request, $id) {
         if (is_numeric($id)) {
             $id = intval($id);
-            return Models\Cost::read_one($id);
+            return CostController::read_one($id);
         }
         return Response::HTTP_BAD_REQUEST;
     }
@@ -74,7 +76,7 @@ class ApiController extends Controller {
 
     public function createCost(Request $request) {
         $input = $request->all();
-        return Models\Cost::create($input);
+        return CostController::create($input);
     }
 
     public function createLink(Request $request) {
@@ -85,7 +87,7 @@ class ApiController extends Controller {
     public function deleteCost(Request $request, $id) {
         if (is_numeric($id)) {
             $id = intval($id);
-            Models\Cost::delete_cost($id);
+            CostController::delete_cost($id);
             return Response::HTTP_OK;
         }
         return Response::HTTP_BAD_REQUEST;
@@ -122,7 +124,7 @@ class ApiController extends Controller {
             $id = intval($id);
             $input = $request->all();
             $input['id'] = $id;
-            return Models\Cost::update_cost($input);
+            return CostController::update_cost($input);
         }
         return Response::HTTP_BAD_REQUEST;
     }

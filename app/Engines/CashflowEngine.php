@@ -12,7 +12,18 @@ class CashflowEngine {
     // use the provider controller to read actuals
     // use the cost model to read manuals
 
-    public static function get_actuals($cost_data, $project_id, $cid=false) {
+    public static function get_actuals($project_id, $cid=false) {
+
+        $cost_data = [];
+        $all_data = Models\Cost::get_cost_array($project_id, $cid);
+        $field = Models\Cost::get_actuals_field();
+        foreach ($all_data as $i) {
+            $cost_data[$i['id']] = [
+                'manual' => $i[$field],
+                'budget' => $i['budget'],
+            ];
+        }
+
         $cost_links = Models\CostLink::link_cost_to_transactions($project_id);
         $keyed_transactions = [];
         $register = ProviderController::$register;
