@@ -12,13 +12,11 @@ class Cost extends Model {
     // Returns a single cost
     public static function read_one($id, $get_actuals = FALSE) {
         $data = self::find($id);
-        $data = self::obj_to_array($data);
-        if ($get_actuals) {
-            $extract = [$id => self::extract_costs_actuals_info($data)];
-            $actuals = Engines\CashflowEngine::get_actuals($data['project_id'], $extract, $id);
-            $data = array_merge($data, $actuals[$id]);
+        $all = self::get_costs($data->project_id, $get_actuals, $id);
+        if (isset($all[0])) {
+            return $all[0];
         }
-        return $data;
+        return [];
     }
 
     // Converts the object to an array
@@ -32,7 +30,7 @@ class Cost extends Model {
      * Items are dictionaries of costs using their id as the key
      */
     public static function get_tree($id) {
-        $all = self::get_project_costs($id, FALSE);
+        $all = self::get_costs($id, FALSE);
         $output = [];
         foreach ($all as $item) {
             $add = [];
@@ -67,33 +65,28 @@ class Cost extends Model {
         ];
     }
 
-    public static function get_project_costs($project_id, $add_actuals = TRUE) {
+    public static function get_costs($project_id, $add_actuals = TRUE, $cid=false) {
         $data = [];
         $manual_actuals = [];
-        $actuals_field = self::get_actuals_field();
+        $query = self::query()->where('project_id', $project_id);
+        if ($cid) {
+            $query->where('id', $cid);
+        }
 
-        $query = self::query()
-            ->where('project_id', $project_id)->get();
-        foreach ($query as $item) {
+        foreach ($query->get() as $item) {
             $add = self::obj_to_array($item);
             array_push($data, $add);
-            $extract = self::extract_costs_actuals_info($add);
-            $manual_actuals[$add['id']] = $extract;
+            $manual_actuals[$add['id']] = self::extract_costs_actuals_info($add);
         }
 
         // Use the cashflow engine to calculate actuals
         // Pass the costs manuals field as an argument
         if ($add_actuals) {
-            $actuals = Engines\CashflowEngine::get_actuals($project_id, $manual_actuals);
+            $actuals = Engines\CashflowEngine::get_actuals($manual_actuals, $project_id, $cid);
 
             foreach ($data as $key => $item) {
                 $cid = $item['id'];
-                $data[$key]['actuals'] = 0;
-                $data[$key]['diff'] = $item['budget'];
-                if (array_key_exists($cid, $actuals)) {
-                    $data[$key]['actuals'] = $actuals[$cid]['actuals'];
-                    $data[$key]['diff'] = $actuals[$cid]['diff'];
-                }
+                $data[$key] = array_merge($data[$key], $actuals[$cid]);
             }
         }
         return $data;
@@ -104,36 +97,6 @@ class Cost extends Model {
         return 'manual_actuals';
     }
 
-    // obsolete, delete when removing /api/costs/all/
-    public static function read_all($project_id): array {
-        $data = [];
-        $query = self::query()
-            ->where('project_id', $project_id)->get();
-        $providers = [
-            'Revolut' => Revolut::class
-        ];
-        $actuals = [];
-        foreach ($providers as $p => $pro_class) {
-            $val = $pro_class::get_project_actuals($project_id);
-            $actuals[$p] = $val;
-        }
-        foreach ($query as $item) {
-            $add = self::obj_to_array($item);
-            $add['actuals'] = 0;
-            if (is_numeric($add['manual_actuals'])) {
-                $add['actuals'] += $add['manual_actuals'];
-            }
-            foreach ($providers as $p => $pro_class) {
-                if (isset($actuals[$p][$add['id']]['amount'])) {
-                    $add['actuals'] += $actuals[$p][$add['id']]['amount'];
-                }
-            }
-            $add['diff'] = $add['budget'] - $add['actuals'];
-            array_push($data, $add);
-        }
-
-        return $data;
-    }
 
 // Update a cost
     public static function update_cost($data, $get_actuals = TRUE) {

@@ -31,7 +31,6 @@ Route::get('/api/actuals/project/{id}', 'App\Http\Controllers\ApiController@getP
 Route::get('/api/actuals/cost/{id}', 'App\Http\Controllers\ApiController@getCostActuals')->middleware('auth')->name('api_get_cost_actuals');
 Route::get('/api/actuals/all', 'App\Http\Controllers\ApiController@getAllActuals')->middleware('auth')->name('api_get_all_actuals');
 
-Route::get('/api/costs/all/{id}', 'App\Http\Controllers\ApiController@getAllCosts')->middleware('auth')->name('api_get_all_costs');
 Route::get('/api/costs/all2/{id}', 'App\Http\Controllers\ApiController@getAllCosts2')->middleware('auth')->name('api_get_all_costs2');
 Route::get('/api/projects/tree/{id}', 'App\Http\Controllers\ApiController@getTree')->middleware('auth')->name('api_get_tree');
 Route::get('/api/costs/id/{id}', 'App\Http\Controllers\ApiController@getCost')->middleware('auth')->name('api_get_cost');
