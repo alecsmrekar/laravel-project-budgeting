@@ -30,6 +30,7 @@ Vue.component('project-table', require('./components/ProjectsComponent.vue').def
 Vue.component('project-modal', require('./components/EditProjectModal.vue').default);
 Vue.component('project-editor', require('./components/ProjectEditor.vue').default);
 Vue.component('new-cost-item', require('./components/CostItemModal.vue').default);
+Vue.component('cashflow-check-table', require('./components/CashflowCheckTable.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

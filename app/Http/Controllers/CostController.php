@@ -45,7 +45,8 @@ class CostController {
         // Use the cashflow engine to calculate actuals
         // Pass the costs manuals field as an argument
         if ($add_actuals) {
-            $actuals = Engines\CashflowEngine::get_actuals($project_id, $cid);
+            $engine = new Engines\CashflowEngine($project_id, $cid);
+            $actuals = $engine->get_actuals();
 
             foreach ($data as $key => $item) {
                 $cid = $item['id'];

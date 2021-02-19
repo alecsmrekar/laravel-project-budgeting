@@ -45,6 +45,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('transactions_list') }}">{{ __('Transaction List') }}</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('cashflow_check') }}">{{ __('Cashflow Check') }}</a>
+                        </li>
                         <li class="nav-item"></li>
 
                         <li class="nav-item dropdown">
