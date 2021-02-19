@@ -17,7 +17,11 @@ export default {
             id: -1,
             modal_id: -1,
             filter_final: -1,
-            filter_final_options: [-1,0,1],
+            filter_final_options: {
+                '-1': 'All',
+                0: 'Open',
+                1: 'Final'
+            },
             isModalVisible: false,
             cname: '',
             update_msg: '',
@@ -117,7 +121,7 @@ export default {
             this.modal_id = id;
             this.isModalVisible = true;
         },
-        finalFilter: function(event) {
+        finalFilter: function (event) {
             this.filter_final = parseInt(event.target.value);
         },
         fetchProjectInfo() {
@@ -161,7 +165,7 @@ export default {
 
                         <span>Filter on final status:</span>
                         <select @change="finalFilter($event)" id="filter_final" v-model="filter_final">
-                            <option v-for="opt in filter_final_options" v-bind:value="opt">{{opt}}</option>
+                            <option v-for="(label, opt) in filter_final_options" v-bind:value="opt">{{ label }}</option>
                         </select><br><br>
 
                         <table class="table table-striped">

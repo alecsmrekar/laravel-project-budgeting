@@ -12,7 +12,7 @@ class CashflowEngine {
     // use the provider controller to read actuals
     // use the cost model to read manuals
 
-    public static function get_actuals($project_id, $cid=false) {
+    public static function get_actuals($project_id, $cid = FALSE) {
 
         $cost_data = [];
         $all_data = Models\Cost::get_cost_array($project_id, $cid);
@@ -24,10 +24,10 @@ class CashflowEngine {
             ];
         }
 
-        $cost_links = Models\CostLink::link_cost_to_transactions($project_id);
+        $cost_links = Models\CostLink::link_cost_to_transactions($project_id, $cid);
         $keyed_transactions = [];
         $register = ProviderController::$register;
-        $transactions = ProviderController::read_transactions(false);
+        $transactions = ProviderController::read_transactions(FALSE);
         foreach ($transactions as $item) {
             $provider = $item['provider'];
             $provider_id_key = $register[$provider]::get_table_id_field();
@@ -36,19 +36,18 @@ class CashflowEngine {
             }
             $keyed_transactions[$provider][$item[$provider_id_key]] = $item['amount'];
         }
-        foreach ($cost_data as $key=>$item) {
+        foreach ($cost_data as $key => $item) {
             $cost_data[$key]['transactions'] = 0;
         }
-        foreach ($cost_links as $ckey=>$citem) {
+        foreach ($cost_links as $ckey => $citem) {
             $provider = $citem['provider'];
             $tid = $citem['transaction_id'];
             $cid = $citem['cost_id'];
-            if (isset($keyed_transactions[$provider][$tid])) {
-                $cost_data[$cid]['transactions'] += $keyed_transactions[$provider][$tid];
-            }
+            $cost_data[$cid]['transactions'] += $keyed_transactions[$provider][$tid];
+
         }
         $output = [];
-        foreach ($cost_data as $key=>$item) {
+        foreach ($cost_data as $key => $item) {
             $actuals = $item['manual'] + $item['transactions'];
             $diff = $item['budget'] - $actuals;
             $output[$key] = [

@@ -2696,7 +2696,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       id: -1,
       modal_id: -1,
       filter_final: -1,
-      filter_final_options: [-1, 0, 1],
+      filter_final_options: {
+        '-1': 'All',
+        0: 'Open',
+        1: 'Final'
+      },
       isModalVisible: false,
       cname: '',
       update_msg: '',
@@ -41034,9 +41038,9 @@ var render = function() {
                     ]
                   }
                 },
-                _vm._l(_vm.filter_final_options, function(opt) {
+                _vm._l(_vm.filter_final_options, function(label, opt) {
                   return _c("option", { domProps: { value: opt } }, [
-                    _vm._v(_vm._s(opt))
+                    _vm._v(_vm._s(label))
                   ])
                 }),
                 0
