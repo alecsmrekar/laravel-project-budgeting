@@ -16,7 +16,7 @@ class CostController {
     }
 
 
-// Update a cost
+    // Update a cost
     public static function update_cost($data, $get_actuals = TRUE) {
         $cost = Cost::find($data['id']);
         $cost = Cost::write($data, $cost, $get_actuals);

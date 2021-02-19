@@ -2186,7 +2186,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 e.preventDefault();
 
                 if (!(this.project && this.cost_id && this.modal_provider)) {
-                  _context2.next = 6;
+                  _context2.next = 8;
                   break;
                 }
 
@@ -2209,10 +2209,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 5:
                 response = _context2.sent;
-
-              case 6:
                 _context2.next = 8;
-                return this.$emit('exit-with-change', this.modal_id, this.is_new);
+                return this.$emit('exit-with-change', is_new);
 
               case 8:
               case "end":
@@ -2697,6 +2695,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     return {
       id: -1,
       modal_id: -1,
+      filter_final: -1,
+      filter_final_options: [-1, 0, 1],
       isModalVisible: false,
       cname: '',
       update_msg: '',
@@ -2823,6 +2823,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : -1;
       this.modal_id = id;
       this.isModalVisible = true;
+    },
+    finalFilter: function finalFilter(event) {
+      this.filter_final = parseInt(event.target.value);
     },
     fetchProjectInfo: function fetchProjectInfo() {
       var _this2 = this;
@@ -3202,7 +3205,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
               pos = _step$value[0],
               data = _step$value[1];
 
-          if (data.id === id && data.provider === provider) {
+          if (data.number === id && data.provider === provider) {
             return pos;
           }
         }
@@ -3223,23 +3226,18 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         this.update_msg = 'Updated link on ' + this.modal_provider + ' transaction #' + this.modal_id;
       }
 
-      this.update_msg = 'Updated link on ' + this.modal_provider + ' transaction #' + this.modal_id;
       var ID_to_update = this.findId(this.modal_id, this.modal_provider);
       this.modal_id = -1;
       this.modal_provider = '';
-      console.log(ID_to_update);
-      var updated = this.transactions[ID_to_update];
-      updated.status = 'Linked';
-      this.$set(this.transactions, ID_to_update, updated);
+      this.transactions[ID_to_update].status = 'Linked';
+      this.$set(this.transactions, ID_to_update, this.transactions[ID_to_update]);
     },
     exitWithDelete: function exitWithDelete(provider, id) {
       this.isModalVisible = false;
       this.update_msg = 'Deleted link on ' + provider + ' transaction #' + id;
       var ID_to_update = this.findId(id, provider);
-      console.log(ID_to_update);
-      var updated = this.transactions[ID_to_update];
-      updated.status = 'Not Linked';
-      this.$set(this.transactions, ID_to_update, updated);
+      this.transactions[ID_to_update].status = 'Not Linked';
+      this.$set(this.transactions, ID_to_update, this.transactions[ID_to_update]);
       this.modal_id = -1;
       this.modal_provider = '';
     },
@@ -41001,6 +40999,51 @@ var render = function() {
               _vm._v(" "),
               _c("br"),
               _vm._v(" "),
+              _c("span", [_vm._v("Filter on final status:")]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.filter_final,
+                      expression: "filter_final"
+                    }
+                  ],
+                  attrs: { id: "filter_final" },
+                  on: {
+                    change: [
+                      function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.filter_final = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      },
+                      function($event) {
+                        return _vm.finalFilter($event)
+                      }
+                    ]
+                  }
+                },
+                _vm._l(_vm.filter_final_options, function(opt) {
+                  return _c("option", { domProps: { value: opt } }, [
+                    _vm._v(_vm._s(opt))
+                  ])
+                }),
+                0
+              ),
+              _c("br"),
+              _c("br"),
+              _vm._v(" "),
               _c(
                 "table",
                 { staticClass: "table table-striped" },
@@ -41020,49 +41063,56 @@ var render = function() {
                   ),
                   _vm._v(" "),
                   _vm._l(_vm.sortCost(_vm.costs), function(cost) {
-                    return _c(
-                      "tr",
-                      [
-                        _vm._l(cost, function(item, key) {
-                          return _vm.render.includes(key)
-                            ? _c("td", [
-                                key == "tax_rate"
-                                  ? _c("span", [
-                                      _vm._v(
-                                        "\n                                " +
-                                          _vm._s(item * 100) +
-                                          "\n                                "
-                                      )
-                                    ])
-                                  : _c("span", [
-                                      _vm._v(
-                                        "\n                                    " +
-                                          _vm._s(item) +
-                                          "\n                                "
-                                      )
-                                    ])
-                              ])
-                            : _vm._e()
-                        }),
-                        _vm._v(" "),
-                        _c("td", [
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-primary",
-                              attrs: { type: "button" },
-                              on: {
-                                click: function($event) {
-                                  return _vm.openModal(cost.id)
-                                }
-                              }
-                            },
-                            [_vm._v("Edit\n                                ")]
-                          )
-                        ])
-                      ],
-                      2
-                    )
+                    return _vm.filter_final === -1 ||
+                      cost.final === _vm.filter_final
+                      ? _c(
+                          "tr",
+                          [
+                            _vm._l(cost, function(item, key) {
+                              return _vm.render.includes(key)
+                                ? _c("td", [
+                                    key == "tax_rate"
+                                      ? _c("span", [
+                                          _vm._v(
+                                            "\n                                " +
+                                              _vm._s(item * 100) +
+                                              "\n                                "
+                                          )
+                                        ])
+                                      : _c("span", [
+                                          _vm._v(
+                                            "\n                                    " +
+                                              _vm._s(item) +
+                                              "\n                                "
+                                          )
+                                        ])
+                                  ])
+                                : _vm._e()
+                            }),
+                            _vm._v(" "),
+                            _c("td", [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-primary",
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.openModal(cost.id)
+                                    }
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    "Edit\n                                "
+                                  )
+                                ]
+                              )
+                            ])
+                          ],
+                          2
+                        )
+                      : _vm._e()
                   })
                 ],
                 2

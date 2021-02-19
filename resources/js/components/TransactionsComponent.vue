@@ -92,7 +92,7 @@ export default {
         },
         findId: function (id, provider) {
             for (const [pos, data] of this.transactions.entries()) {
-                if (data.id === id && data.provider === provider) {
+                if (data.number === id && data.provider === provider) {
                     return pos;
                 }
             }
@@ -105,23 +105,18 @@ export default {
             }else {
                 this.update_msg = 'Updated link on ' + this.modal_provider + ' transaction #' + this.modal_id;
             }
-            this.update_msg = 'Updated link on ' + this.modal_provider + ' transaction #' + this.modal_id;
             var ID_to_update = this.findId(this.modal_id, this.modal_provider);
             this.modal_id = -1;
             this.modal_provider = '';
-            console.log(ID_to_update);
-            let updated = this.transactions[ID_to_update];
-            updated.status = 'Linked';
-            this.$set(this.transactions, ID_to_update, updated);
+            this.transactions[ID_to_update].status = 'Linked';
+            this.$set(this.transactions, ID_to_update, this.transactions[ID_to_update]);
         },
         exitWithDelete: function (provider, id) {
             this.isModalVisible = false;
             this.update_msg = 'Deleted link on ' + provider + ' transaction #' + id;
             var ID_to_update = this.findId(id, provider);
-            console.log(ID_to_update);
-            let updated = this.transactions[ID_to_update];
-            updated.status = 'Not Linked';
-            this.$set(this.transactions, ID_to_update, updated);
+            this.transactions[ID_to_update].status = 'Not Linked';
+            this.$set(this.transactions, ID_to_update, this.transactions[ID_to_update]);
             this.modal_id = -1;
             this.modal_provider = '';
         },

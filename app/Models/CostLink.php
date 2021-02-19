@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\CostController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models;
@@ -12,15 +13,13 @@ class CostLink extends Model {
     // Find costs within a projects which are linked to transactions
     public static function link_cost_to_transactions($pid, $cid = FALSE) {
         $data = [];
-        $query = self::query()
-            ->join('costs', 'cost_links.cost_id', '=', 'costs.id');
+        $query = self::query()->join('costs', 'costs.id', '=', 'cost_links.cost_id');
         $query->where('costs.project_id', '=', $pid);
         if ($cid) {
             $query->where('costs.id', '=', $cid);
         }
         $query->select('cost_links.*');
-        $query->get();
-        foreach ($query as $item) {
+        foreach ($query->get() as $item) {
             array_push($data, $item->attributes);
         }
         return $data;
@@ -79,7 +78,7 @@ class CostLink extends Model {
             $link = new self();
         }
         // For the sum, we assume we'll use the entire sum of the linked cost
-        $cost = Models\Cost::read_one($data['cost_id']);
+        $cost = CostController::read_one($data['cost_id']);
 
         $link->cost_id = $data['cost_id'];
         $link->transaction_id = $data['transaction_id'];

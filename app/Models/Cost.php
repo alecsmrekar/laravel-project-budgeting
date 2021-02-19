@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Engines;
+use App\Http\Controllers\CostController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -29,13 +29,23 @@ class Cost extends Model {
         return (array) $item->attributes;
     }
 
+    public static function which_costs_are_linked($pid) {
+        $output = [];
+        $links = CostLink::link_cost_to_transactions($pid);
+        foreach ($links as $i) {
+            array_push($output, $i['cost_id']);
+        }
+        return $output;
+    }
+
     /*
      * Returns a projects cost tree
      * Departments are array keys
      * Items are dictionaries of costs using their id as the key
      */
     public static function get_tree($id) {
-        $all = self::get_costs($id, FALSE);
+        $all = CostController::get_costs($id, false);
+        $links = self::which_costs_are_linked($id);
         $output = [];
         foreach ($all as $item) {
             $add = [];
@@ -45,6 +55,7 @@ class Cost extends Model {
             $person = $item['person'];
             $company = $item['company'];
             $service_full_name = $service;
+            $is_linked = (in_array($item['id'], $links) ? '' : ' -> not yet linked');
             if ($sector) {
                 $service_full_name = $sector . ': ' . $service_full_name;
             }
@@ -57,7 +68,7 @@ class Cost extends Model {
             if (array_key_exists($dep, $output) == FALSE) {
                 $output[$dep] = [];
             }
-            $output[$dep][$item['id']] = $service_full_name;
+            $output[$dep][$item['id']] = $service_full_name . $is_linked;
         }
         return $output;
     }
@@ -75,7 +86,7 @@ class Cost extends Model {
         return 'manual_actuals';
     }
 
-// Write to the DB. Either new or update existing.
+    // Write to the DB. Either new or update existing.
     public static function write(array $data, $cost = FALSE) {
         if ($cost == FALSE) {
             $cost = new self();
@@ -95,5 +106,9 @@ class Cost extends Model {
         $cost->manual_actuals_date = $data['manual_actuals_date'];
         $cost->save();
         return self::obj_to_array($cost);
+    }
+
+    public static function find_linked_costs($pid, $cid=false){
+
     }
 }

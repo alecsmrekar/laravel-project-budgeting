@@ -16,6 +16,8 @@ export default {
         return {
             id: -1,
             modal_id: -1,
+            filter_final: -1,
+            filter_final_options: [-1,0,1],
             isModalVisible: false,
             cname: '',
             update_msg: '',
@@ -115,6 +117,9 @@ export default {
             this.modal_id = id;
             this.isModalVisible = true;
         },
+        finalFilter: function(event) {
+            this.filter_final = parseInt(event.target.value);
+        },
         fetchProjectInfo() {
             if (this.id !== '-1') {
                 axios.get('/api/projects/id/' + this.id)
@@ -154,12 +159,17 @@ export default {
                         </div>
                         <br>
 
+                        <span>Filter on final status:</span>
+                        <select @change="finalFilter($event)" id="filter_final" v-model="filter_final">
+                            <option v-for="opt in filter_final_options" v-bind:value="opt">{{opt}}</option>
+                        </select><br><br>
+
                         <table class="table table-striped">
                             <tr>
                                 <th v-for="h in headers" v-if="Object.values(translate).indexOf(h) > -1">{{ h }}</th>
                                 <th>Edit</th>
                             </tr>
-                            <tr v-for="cost in sortCost(costs)">
+                            <tr v-for="cost in sortCost(costs)" v-if="filter_final === -1 || cost.final===filter_final">
                                 <td v-for="(item, key) in cost" v-if="render.includes(key)">
                                     <span v-if="key == 'tax_rate'">
                                     {{ item * 100 }}

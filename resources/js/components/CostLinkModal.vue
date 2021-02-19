@@ -83,8 +83,8 @@ export default {
                     .catch(function (error) {
                         console.log(error);
                     });
+                await this.$emit('exit-with-change', is_new)
             }
-            await this.$emit('exit-with-change', this.modal_id, this.is_new)
         },
         loadProjectList: function () {
             this.all_projects = this.loadApiArraySync('/api/projects/all');
