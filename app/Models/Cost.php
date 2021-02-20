@@ -10,9 +10,12 @@ class Cost extends Model {
     use HasFactory;
 
 
-    public static function get_cost_array($pid, $cid=false) {
+    public static function get_cost_array($pid=false, $cid=false) {
         $data = [];
-        $query = self::query()->where('project_id', $pid);
+        $query = self::query();
+        if ($pid) {
+            $query->where('project_id', $pid);
+        }
         if ($cid) {
             $query->where('id', $cid);
         }
@@ -49,28 +52,35 @@ class Cost extends Model {
         $output = [];
         foreach ($all as $item) {
             $add = [];
-            $dep = $item['department'];
-            $sector = $item['sector'];
-            $service = $item['service'];
-            $person = $item['person'];
-            $company = $item['company'];
-            $service_full_name = $service;
             $is_linked = (in_array($item['id'], $links) ? '' : ' -> not yet linked');
-            if ($sector) {
-                $service_full_name = $sector . ': ' . $service_full_name;
-            }
-            if ($person) {
-                $service_full_name = $service_full_name . ': ' . $person;
-            }
-            if ($company) {
-                $service_full_name = $service_full_name . ' (' . $company . ')';
-            }
+            $service_full_name = self::generate_service_title($item);
+            $dep = $item['department'];
             if (array_key_exists($dep, $output) == FALSE) {
                 $output[$dep] = [];
             }
             $output[$dep][$item['id']] = $service_full_name . $is_linked;
         }
         return $output;
+    }
+
+    public static function generate_service_title($item){
+        $dep = $item['department'];
+        $sector = $item['sector'];
+        $service = $item['service'];
+        $person = $item['person'];
+        $company = $item['company'];
+        $service_full_name = $service;
+
+        if ($sector) {
+            $service_full_name = $sector . ': ' . $service_full_name;
+        }
+        if ($person) {
+            $service_full_name = $service_full_name . ': ' . $person;
+        }
+        if ($company) {
+            $service_full_name = $service_full_name . ' (' . $company . ')';
+        }
+        return $service_full_name;
     }
 
     public static function extract_costs_actuals_info($cost_array) {
@@ -108,7 +118,4 @@ class Cost extends Model {
         return self::obj_to_array($cost);
     }
 
-    public static function find_linked_costs($pid, $cid=false){
-
-    }
 }

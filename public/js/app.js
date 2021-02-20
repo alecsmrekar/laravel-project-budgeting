@@ -1856,12 +1856,30 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => __WEBPACK_DEFAULT_EXPORT__
 /* harmony export */ });
-function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -1897,31 +1915,76 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
+      final_status: {
+        0: 'Open',
+        1: 'Final'
+      },
+      filter_projects: -1,
+      filter_projects_options: {
+        '-1': 'All'
+      },
       headers: {
         'date': 'Date',
+        'project_id': 'Project ID',
         'project': 'Project',
-        'desc': 'Description',
-        'value': 'Value',
-        'cum': 'Cumulative'
-      }
+        'department': 'Department',
+        'sector': 'Sector',
+        'cost': 'Service',
+        'final': 'Status',
+        'amount': 'Amount',
+        'sum': 'Cumulative'
+      },
+      cashflow: [],
+      sum: 0
     };
   },
   mounted: function mounted() {
     this.loadCashflow();
   },
   methods: {
+    calcSum: function calcSum() {
+      this.sum = 0;
+
+      for (var _i = 0, _Object$entries = Object.entries(this.cashflow); _i < _Object$entries.length; _i++) {
+        var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
+            key = _Object$entries$_i[0],
+            row = _Object$entries$_i[1];
+
+        if (row['project_id'] === this.filter_projects || this.filter_projects === -1) {
+          this.sum += row['amount'];
+          row['sum'] = this.sum;
+          this.$set(this.cashflow, key, row);
+        }
+      }
+    },
+    projectFilter: function projectFilter(event) {
+      this.filter_projects = parseInt(event.target.value);
+      this.calcSum();
+    },
     loadCashflow: function loadCashflow() {
       var _this = this;
 
-      axios.get('/api/transactions/all2').then(function (response) {
+      axios.get('/api/cashflow/all').then(function (response) {
         var _iterator = _createForOfIteratorHelper(response.data),
             _step;
 
         try {
           for (_iterator.s(); !(_step = _iterator.n()).done;) {
             var item = _step.value;
+            // sort the fields based on headers
+            var insert = {};
 
-            _this.transactions.push(item);
+            for (var key in _this.headers) {
+              if (key in item) {
+                insert[key] = item[key];
+              }
+            }
+
+            if (item['project_id'] in _this.filter_projects_options === false) {
+              _this.filter_projects_options[item['project_id']] = item['project'];
+            }
+
+            _this.cashflow.push(insert);
           }
         } catch (err) {
           _iterator.e(err);
@@ -1929,7 +1992,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           _iterator.f();
         }
 
-        _this.generateHeaders();
+        _this.calcSum();
       })["catch"](function (error) {
         console.log(error);
       });
@@ -1986,8 +2049,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       manual_actuals: 0,
       manual_actuals_date: '',
       tag: '',
-      budget: 1,
-      tax_rate: 0.5,
+      budget: 0,
+      tax_rate: 0,
       "final": 0,
       comment: '',
       errors: []
@@ -2560,9 +2623,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     cancelClicked: function cancelClicked() {
       this.$emit('exit-no-change', true);
     },
-    submitClicked: function submitClicked() {
-      this.$emit('exit-with-change', true);
-    },
     loadProject: function loadProject() {
       var _this = this;
 
@@ -2644,7 +2704,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 e.preventDefault();
 
                 if (!(this.cname && this.cclient)) {
-                  _context2.next = 15;
+                  _context2.next = 17;
                   break;
                 }
 
@@ -2675,14 +2735,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 9:
                 object = _context2.sent;
                 _context2.next = 12;
-                return object.id;
+                return object['id'];
 
               case 12:
                 id = _context2.sent;
                 _context2.next = 15;
-                return this.$emit('exit-with-change', id, is_new, object);
+                return console.log(id, is_new, object);
 
               case 15:
+                _context2.next = 17;
+                return this.$emit('exit-with-change', id, is_new, object);
+
+              case 17:
                 this.errors = [];
 
                 if (!this.cname) {
@@ -2693,7 +2757,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   this.errors.push('Client required.');
                 }
 
-              case 18:
+              case 20:
               case "end":
                 return _context2.stop();
             }
@@ -2839,6 +2903,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           if (key in this.translate) {
             this.headers.push(this.translate[key]);
           }
+        }
+      } else {
+        for (var key in this.translate) {
+          this.headers.push(this.translate[key]);
         }
       }
     },
@@ -3085,9 +3153,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     },
     exitNoChange: function exitNoChange() {
       this.isModalVisible = false;
-      this.$router.push({
-        name: 'ProjectList'
-      });
     },
     exitWithChange: function exitWithChange(id, is_new, object) {
       this.isModalVisible = false;
@@ -40192,49 +40257,109 @@ var render = function() {
           _c("div", { staticClass: "card-header" }, [_vm._v("Cashflow Check")]),
           _vm._v(" "),
           _c("div", { staticClass: "card-body" }, [
-            _c("table", { staticClass: "table table-striped" }, [
-              _c(
-                "tr",
-                _vm._l(_vm.headers, function(h) {
-                  return _c("th", [_vm._v(_vm._s(h))])
+            _c("span", [_vm._v("Filter projects:")]),
+            _vm._v(" "),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.filter_projects,
+                    expression: "filter_projects"
+                  }
+                ],
+                staticClass: "custom-select",
+                attrs: { id: "filter_projects" },
+                on: {
+                  change: [
+                    function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.filter_projects = $event.target.multiple
+                        ? $$selectedVal
+                        : $$selectedVal[0]
+                    },
+                    function($event) {
+                      return _vm.projectFilter($event)
+                    }
+                  ]
+                }
+              },
+              _vm._l(_vm.filter_projects_options, function(label, opt) {
+                return _c("option", { domProps: { value: opt } }, [
+                  _vm._v(_vm._s(label) + "\n                        ")
+                ])
+              }),
+              0
+            ),
+            _c("br"),
+            _c("br"),
+            _vm._v(" "),
+            _c(
+              "table",
+              { staticClass: "table table-striped" },
+              [
+                _c(
+                  "tr",
+                  _vm._l(_vm.headers, function(h) {
+                    return _c("th", [_vm._v(_vm._s(h))])
+                  }),
+                  0
+                ),
+                _vm._v(" "),
+                _vm._l(_vm.cashflow, function(cf) {
+                  return _vm.filter_projects === -1 ||
+                    cf.project_id === _vm.filter_projects
+                    ? _c(
+                        "tr",
+                        _vm._l(cf, function(item, key) {
+                          return key in _vm.headers
+                            ? _c("td", [
+                                key != "final"
+                                  ? _c("span", [_vm._v(_vm._s(item))])
+                                  : _c("span", [
+                                      _vm._v(_vm._s(_vm.final_status[item]))
+                                    ])
+                              ])
+                            : _vm._e()
+                        }),
+                        0
+                      )
+                    : _vm._e()
                 }),
-                0
-              ),
-              _vm._v(" "),
-              _vm._m(0),
-              _vm._v(" "),
-              _vm._m(1)
-            ])
+                _vm._v(" "),
+                _c(
+                  "tr",
+                  { staticStyle: { "font-weight": "bold" } },
+                  [
+                    _c("td", [_vm._v("Total Cash Change:")]),
+                    _vm._v(" "),
+                    _vm._l(Object.keys(_vm.headers).length - 2, function(i) {
+                      return _c("td")
+                    }),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(_vm.sum))])
+                  ],
+                  2
+                )
+              ],
+              2
+            )
           ])
         ])
       ])
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("tr", [_c("td")])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("tr", { staticStyle: { "font-weight": "bold" } }, [
-      _c("td", [_vm._v("Total:")]),
-      _vm._v(" "),
-      _c("td"),
-      _vm._v(" "),
-      _c("td"),
-      _vm._v(" "),
-      _c("td"),
-      _vm._v(" "),
-      _c("td", [_vm._v("100")])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -41255,6 +41380,7 @@ var render = function() {
                       expression: "filter_final"
                     }
                   ],
+                  staticClass: "custom-select",
                   attrs: { id: "filter_final" },
                   on: {
                     change: [
@@ -41502,7 +41628,7 @@ var render = function() {
                             _c(
                               "button",
                               {
-                                staticClass: "btn",
+                                staticClass: "btn btn-secondary",
                                 attrs: { type: "button" },
                                 on: {
                                   click: function($event) {

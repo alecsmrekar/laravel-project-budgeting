@@ -37,7 +37,7 @@
                                 </td>
                                 <td>
                                     <span>
-                                        <button @click="openModal(project.id)" type="button" class="btn">Edit
+                                        <button @click="openModal(project.id)" type="button" class="btn btn-secondary">Edit
                                     </button>
                                     </span>
                                 </td>
@@ -109,12 +109,11 @@ export default {
         },
         exitNoChange: function () {
             this.isModalVisible = false;
-            this.$router.push({name: 'ProjectList'})
         },
         exitWithChange: function (id, is_new, object) {
             this.isModalVisible = false;
             this.modal_id = -1;
-            var ID_to_update;
+            let ID_to_update;
             if (is_new) {
                 this.update_msg = 'Created new project ID: ' + id;
                 ID_to_update = this.projects.length;

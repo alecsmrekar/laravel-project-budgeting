@@ -67,6 +67,10 @@ export default {
                         this.headers.push(this.translate[key]);
                     }
                 }
+            } else {
+                for (var key in this.translate) {
+                    this.headers.push(this.translate[key]);
+                }
             }
         },
         exitWithChange: function (id, is_new, object) {
@@ -164,7 +168,8 @@ export default {
                         <br>
 
                         <span>Filter on final status:</span>
-                        <select @change="finalFilter($event)" id="filter_final" v-model="filter_final">
+                        <select class="custom-select" @change="finalFilter($event)" id="filter_final"
+                                v-model="filter_final">
                             <option v-for="(label, opt) in filter_final_options" v-bind:value="opt">{{ label }}</option>
                         </select><br><br>
 

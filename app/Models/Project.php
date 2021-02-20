@@ -49,12 +49,21 @@ class Project extends Model {
         $project->client = $data['client'];
         $project->active = $data['active'];
         $project->save();
-        return self::read_one($data['id']);
+        return self::read_one($project->id);
     }
 
     // Delete one from DB
     public static function delete_project($id) {
         $item = self::find($id);
         $item->delete();
+    }
+
+    public static function get_project_names() {
+        $all = self::read_all();
+        $output = [];
+        foreach ($all as $item) {
+            $output[$item['id']] = $item['name'];
+        }
+        return $output;
     }
 }

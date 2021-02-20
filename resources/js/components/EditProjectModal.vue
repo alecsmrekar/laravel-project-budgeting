@@ -24,9 +24,6 @@ export default {
         cancelClicked: function () {
             this.$emit('exit-no-change', true)
         },
-        submitClicked: function () {
-            this.$emit('exit-with-change', true)
-        },
         loadProject: function () {
             if (this.modal_id !== -1) {
                 axios.get('/api/projects/id/' + this.modal_id)
@@ -101,7 +98,8 @@ export default {
                         console.log(error);
                     });
                 const object = await response.data;
-                id = await object.id;
+                id = await object['id'];
+                await console.log(id, is_new, object)
                 await this.$emit('exit-with-change', id, is_new, object);
             }
             this.errors = [];

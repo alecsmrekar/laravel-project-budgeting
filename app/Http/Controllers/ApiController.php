@@ -151,8 +151,7 @@ class ApiController extends Controller {
             'client' => $input['client'],
             'active' => ($input['active'] == TRUE ? 1 : 0)
         ];
-        Models\Project::create($data);
-        return Response::HTTP_OK;
+        return Models\Project::create($data);
     }
 
     public function updateProject(Request $request, $id) {
@@ -176,6 +175,10 @@ class ApiController extends Controller {
 
     public function getHeaders(Request $request) {
         return Models\Transaction::getHeaders();
+    }
+
+    public function getCashflow(Request $request) {
+        return CostController::get_cashflow_page();
     }
 
     public function getProject(Request $request, $id) {

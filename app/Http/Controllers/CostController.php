@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Engines;
 use App\Models\Cost;
+use App\Models\Project;
 
 
 class CostController {
@@ -54,6 +55,49 @@ class CostController {
             }
         }
         return $data;
+    }
+
+    public static function get_cashflow_page(){
+        $engine = new Engines\CashflowEngine();
+        $engine->receiveAllCostData();
+        $actuals = $engine->get_actuals();
+        $project_names = Project::get_project_names();
+        $output = [];
+        foreach ($actuals as $cost) {
+            $item = [
+                'project' => $project_names[$cost['project_id']],
+                'project_id' => $cost['project_id'],
+                'department' => $cost['department'],
+                'sector' => $cost['sector'],
+                'cost' => Cost::generate_service_title($cost),
+                'cost_id' => $cost['id'],
+                'final' => $cost['final'],
+            ];
+
+            // Check manuals first
+            $manual = $cost['manual_actuals'];
+            $manual_date = $cost['manual_actuals_date'];
+            if ($manual_date) {
+                $insert = $item;
+                $insert['date'] = $manual_date;
+                $insert['amount'] = $manual;
+                array_push($output, $insert);
+            }
+
+            // Loop transactions second
+            foreach ($cost['transactions_data'] as $tr) {
+                $insert = $item;
+                $insert['date'] = $tr['date'];
+                $insert['amount'] = $tr['amount'];
+                array_push($output, $insert);
+            }
+        }
+        usort($output, function ($a, $b) {
+            $t1 = strtotime($a['date']);
+            $t2 = strtotime($b['date']);
+            return $t1 - $t2;
+        });
+        return $output;
     }
 
 }

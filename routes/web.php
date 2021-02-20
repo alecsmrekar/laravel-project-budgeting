@@ -40,6 +40,7 @@ Route::post('/api/costs/delete/{id}', 'App\Http\Controllers\ApiController@delete
 Route::get('/project_list', 'App\Http\Controllers\ProjectController@listView')->middleware('auth')->name('project_list');
 Route::view('/project_editor/{id}', 'project_editor')->middleware('auth')->name('project_editor');
 
+Route::get('/api/cashflow/all', 'App\Http\Controllers\ApiController@getCashflow')->middleware('auth')->name('api_get_all_cashflow');
 Route::view('/cashflow_check', 'cashflow_check')->middleware('auth')->name('cashflow_check');
 Route::get('/create_project', 'App\Http\Controllers\ProjectController@viewProjectForm')->middleware('auth')->name('add_project_form');
 Route::get('/edit_project/{id}', 'App\Http\Controllers\ProjectController@viewProjectForm')->middleware('auth')->name('edit_project_form');
