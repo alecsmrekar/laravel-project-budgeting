@@ -132,11 +132,11 @@ export default {
                 <form @submit="checkForm">
                     <div class="modal-body">
 
-                        <label>Project name:</label><br>
+                        <label>Project name:</label>
                         <input type="text" id="name" name="name" v-model="cname" required><br>
-                        <label>Client name:</label><br>
+                        <label>Client name:</label>
                         <input type="text" id="client" name="client" v-model="cclient" required><br>
-                        <label>Set project to be active:</label><br>
+                        <label>Set project to be active:</label>
                         <input type="checkbox" id="active" name="active" v-model="active"
                                :checked="active"><br>
                         <br>

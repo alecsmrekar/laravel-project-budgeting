@@ -1,24 +1,4 @@
 @import url(https://fonts.googleapis.com/css?family=Nunito);
-.table {
-    display: table;
-
-}
-
-.tr {
-    display: table-row;
-}
-
-.td {
-    display: table-cell;
-    padding: 5px;
-}
-
-@media (min-width: 768px) {
-    .col-md-8 {
-        min-width: 100% !important;
-    }
-}
-
 @charset "UTF-8";
 
 /*!
@@ -10962,6 +10942,83 @@ a.text-dark:focus {
     color: inherit;
     border-color: #dee2e6;
   }
+}
+
+.table {
+  display: table;
+}
+
+.tr {
+  display: table-row;
+}
+
+.td {
+  display: table-cell;
+  padding: 5px;
+}
+
+@media (min-width: 768px) {
+  .col-md-8 {
+    min-width: 100%;
+  }
+
+  .modal-dialog {
+    min-width: 576px;
+  }
+}
+
+#cashflow_page #project_filter select {
+  max-width: -webkit-fit-content;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+}
+
+#cashflow_page #project_filter * {
+  margin: 5px;
+}
+
+#transactions_page .modal-body form {
+  margin: 0 auto;
+}
+
+#transactions_page .modal-body label,
+#transactions_page .modal-body select {
+  display: inline-block;
+}
+
+#transactions_page .modal-body label {
+  width: 20%;
+  text-align: left;
+}
+
+#transactions_page .modal-body label + select {
+  margin: 0 6% 0 4%;
+}
+
+#transactions_page .modal-body select {
+  width: 60%;
+}
+
+#project_list_page .modal-content label,
+#project_list_page .modal-content input {
+  display: inline-block;
+}
+
+#project_list_page .modal-content label {
+  width: 30%;
+  text-align: left;
+}
+
+#project_list_page .modal-content label + input {
+  margin: 0 6% 0 4%;
+}
+
+#project_list_page .modal-content input {
+  width: 40%;
+}
+
+#project_list_page .modal-content #active {
+  width: auto;
 }
 
 

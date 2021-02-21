@@ -1,6 +1,6 @@
 <template>
 
-    <div class="container">
+    <div class="container" id="project_list_page">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">

@@ -1912,6 +1912,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -40250,114 +40251,122 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c("div", { staticClass: "row justify-content-center" }, [
-      _c("div", { staticClass: "col-md-8" }, [
-        _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "card-header" }, [_vm._v("Cashflow Check")]),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-body" }, [
-            _c("span", [_vm._v("Filter projects:")]),
+  return _c(
+    "div",
+    { staticClass: "container", attrs: { id: "cashflow_page" } },
+    [
+      _c("div", { staticClass: "row justify-content-center" }, [
+        _c("div", { staticClass: "col-md-8" }, [
+          _c("div", { staticClass: "card" }, [
+            _c("div", { staticClass: "card-header" }, [
+              _vm._v("Cashflow Check")
+            ]),
             _vm._v(" "),
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.filter_projects,
-                    expression: "filter_projects"
-                  }
-                ],
-                staticClass: "custom-select",
-                attrs: { id: "filter_projects" },
-                on: {
-                  change: [
-                    function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.filter_projects = $event.target.multiple
-                        ? $$selectedVal
-                        : $$selectedVal[0]
-                    },
-                    function($event) {
-                      return _vm.projectFilter($event)
-                    }
-                  ]
-                }
-              },
-              _vm._l(_vm.filter_projects_options, function(label, opt) {
-                return _c("option", { domProps: { value: opt } }, [
-                  _vm._v(_vm._s(label) + "\n                        ")
-                ])
-              }),
-              0
-            ),
-            _c("br"),
-            _c("br"),
-            _vm._v(" "),
-            _c(
-              "table",
-              { staticClass: "table table-striped" },
-              [
+            _c("div", { staticClass: "card-body" }, [
+              _c("div", { attrs: { id: "project_filter" } }, [
+                _c("span", [_vm._v("Filter projects:")]),
+                _vm._v(" "),
                 _c(
-                  "tr",
-                  _vm._l(_vm.headers, function(h) {
-                    return _c("th", [_vm._v(_vm._s(h))])
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.filter_projects,
+                        expression: "filter_projects"
+                      }
+                    ],
+                    staticClass: "custom-select",
+                    attrs: { id: "filter_projects" },
+                    on: {
+                      change: [
+                        function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.filter_projects = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        },
+                        function($event) {
+                          return _vm.projectFilter($event)
+                        }
+                      ]
+                    }
+                  },
+                  _vm._l(_vm.filter_projects_options, function(label, opt) {
+                    return _c("option", { domProps: { value: opt } }, [
+                      _vm._v(_vm._s(label) + "\n                        ")
+                    ])
                   }),
                   0
-                ),
-                _vm._v(" "),
-                _vm._l(_vm.cashflow, function(cf) {
-                  return _vm.filter_projects === -1 ||
-                    cf.project_id === _vm.filter_projects
-                    ? _c(
-                        "tr",
-                        _vm._l(cf, function(item, key) {
-                          return key in _vm.headers
-                            ? _c("td", [
-                                key != "final"
-                                  ? _c("span", [_vm._v(_vm._s(item))])
-                                  : _c("span", [
-                                      _vm._v(_vm._s(_vm.final_status[item]))
-                                    ])
-                              ])
-                            : _vm._e()
-                        }),
-                        0
-                      )
-                    : _vm._e()
-                }),
-                _vm._v(" "),
-                _c(
-                  "tr",
-                  { staticStyle: { "font-weight": "bold" } },
-                  [
-                    _c("td", [_vm._v("Total Cash Change:")]),
-                    _vm._v(" "),
-                    _vm._l(Object.keys(_vm.headers).length - 2, function(i) {
-                      return _c("td")
-                    }),
-                    _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(_vm.sum))])
-                  ],
-                  2
                 )
-              ],
-              2
-            )
+              ]),
+              _c("br"),
+              _c("br"),
+              _vm._v(" "),
+              _c(
+                "table",
+                { staticClass: "table table-striped" },
+                [
+                  _c(
+                    "tr",
+                    _vm._l(_vm.headers, function(h) {
+                      return _c("th", [_vm._v(_vm._s(h))])
+                    }),
+                    0
+                  ),
+                  _vm._v(" "),
+                  _vm._l(_vm.cashflow, function(cf) {
+                    return _vm.filter_projects === -1 ||
+                      cf.project_id === _vm.filter_projects
+                      ? _c(
+                          "tr",
+                          _vm._l(cf, function(item, key) {
+                            return key in _vm.headers
+                              ? _c("td", [
+                                  key != "final"
+                                    ? _c("span", [_vm._v(_vm._s(item))])
+                                    : _c("span", [
+                                        _vm._v(_vm._s(_vm.final_status[item]))
+                                      ])
+                                ])
+                              : _vm._e()
+                          }),
+                          0
+                        )
+                      : _vm._e()
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "tr",
+                    { staticStyle: { "font-weight": "bold" } },
+                    [
+                      _c("td", [_vm._v("Total Cash Change:")]),
+                      _vm._v(" "),
+                      _vm._l(Object.keys(_vm.headers).length - 2, function(i) {
+                        return _c("td")
+                      }),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(_vm.sum))])
+                    ],
+                    2
+                  )
+                ],
+                2
+              )
+            ])
           ])
         ])
       ])
-    ])
-  ])
+    ]
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -41095,7 +41104,6 @@ var render = function() {
           _c("form", { on: { submit: _vm.checkForm } }, [
             _c("div", { staticClass: "modal-body" }, [
               _c("label", [_vm._v("Project name:")]),
-              _c("br"),
               _vm._v(" "),
               _c("input", {
                 directives: [
@@ -41120,7 +41128,6 @@ var render = function() {
               _c("br"),
               _vm._v(" "),
               _c("label", [_vm._v("Client name:")]),
-              _c("br"),
               _vm._v(" "),
               _c("input", {
                 directives: [
@@ -41150,7 +41157,6 @@ var render = function() {
               _c("br"),
               _vm._v(" "),
               _c("label", [_vm._v("Set project to be active:")]),
-              _c("br"),
               _vm._v(" "),
               _c("input", {
                 directives: [
@@ -41532,154 +41538,162 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c("div", { staticClass: "row justify-content-center" }, [
-      _c("div", { staticClass: "col-md-8" }, [
-        _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "card-header" }, [
-            _vm._v("Project Overview")
-          ]),
-          _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "card-body" },
-            [
-              _c("div", [
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary",
-                    attrs: { type: "button" },
-                    on: {
-                      click: function($event) {
-                        return _vm.openModal(-1)
-                      }
-                    }
-                  },
-                  [_vm._v("Add New Project\n                        ")]
-                )
-              ]),
-              _vm._v(" "),
-              _c("br"),
-              _vm._v(" "),
-              _vm.update_msg
-                ? _c(
-                    "div",
-                    {
-                      staticClass: "alert alert-success",
-                      attrs: { role: "alert" }
-                    },
-                    [
-                      _vm._v(
-                        "\n                        " +
-                          _vm._s(_vm.update_msg) +
-                          "\n                    "
-                      )
-                    ]
-                  )
-                : _vm._e(),
-              _vm._v(" "),
-              _c(
-                "table",
-                { staticClass: "table table-striped" },
-                [
+  return _c(
+    "div",
+    { staticClass: "container", attrs: { id: "project_list_page" } },
+    [
+      _c("div", { staticClass: "row justify-content-center" }, [
+        _c("div", { staticClass: "col-md-8" }, [
+          _c("div", { staticClass: "card" }, [
+            _c("div", { staticClass: "card-header" }, [
+              _vm._v("Project Overview")
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "card-body" },
+              [
+                _c("div", [
                   _c(
-                    "tr",
-                    [
-                      _vm._l(_vm.headers, function(header) {
-                        return _c("th", [_vm._v(_vm._s(header))])
-                      }),
-                      _vm._v(" "),
-                      _c("th", [_vm._v("Action")]),
-                      _vm._v(" "),
-                      _c("th", [_vm._v("Open Project")])
-                    ],
-                    2
-                  ),
-                  _vm._v(" "),
-                  _vm._l(_vm.sortProject(_vm.projects), function(project) {
-                    return _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary",
+                      attrs: { type: "button" },
+                      on: {
+                        click: function($event) {
+                          return _vm.openModal(-1)
+                        }
+                      }
+                    },
+                    [_vm._v("Add New Project\n                        ")]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("br"),
+                _vm._v(" "),
+                _vm.update_msg
+                  ? _c(
+                      "div",
+                      {
+                        staticClass: "alert alert-success",
+                        attrs: { role: "alert" }
+                      },
+                      [
+                        _vm._v(
+                          "\n                        " +
+                            _vm._s(_vm.update_msg) +
+                            "\n                    "
+                        )
+                      ]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _c(
+                  "table",
+                  { staticClass: "table table-striped" },
+                  [
+                    _c(
                       "tr",
                       [
-                        _vm._l(project, function(data, key) {
-                          return _vm.render.includes(key)
-                            ? _c("td", [
-                                key == "active"
-                                  ? _c("span", [
-                                      _vm._v(
-                                        "\n                                    " +
-                                          _vm._s(_vm.activePrint(data)) +
-                                          "\n                                "
-                                      )
-                                    ])
-                                  : _c("span", [
-                                      _vm._v(
-                                        "\n                                    " +
-                                          _vm._s(data) +
-                                          "\n                                "
-                                      )
-                                    ])
-                              ])
-                            : _vm._e()
+                        _vm._l(_vm.headers, function(header) {
+                          return _c("th", [_vm._v(_vm._s(header))])
                         }),
                         _vm._v(" "),
-                        _c("td", [
-                          _c("span", [
-                            _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-secondary",
-                                attrs: { type: "button" },
-                                on: {
-                                  click: function($event) {
-                                    return _vm.openModal(project.id)
-                                  }
-                                }
-                              },
-                              [_vm._v("Edit\n                                ")]
-                            )
-                          ])
-                        ]),
+                        _c("th", [_vm._v("Action")]),
                         _vm._v(" "),
-                        _c("td", [
-                          _c(
-                            "a",
-                            {
-                              staticClass: "btn btn-primary",
-                              attrs: { href: "/project_editor/" + project.id }
-                            },
-                            [
-                              _vm._v(
-                                "\n                                    Open\n                                "
-                              )
-                            ]
-                          )
-                        ])
+                        _c("th", [_vm._v("Open Project")])
                       ],
                       2
-                    )
-                  })
-                ],
-                2
-              ),
-              _vm._v(" "),
-              _vm.isModalVisible
-                ? _c("project-modal", {
-                    attrs: { modal_id: _vm.modal_id },
-                    on: {
-                      "exit-no-change": _vm.exitNoChange,
-                      "exit-with-change": _vm.exitWithChange,
-                      "exit-delete": _vm.exitWithDelete
-                    }
-                  })
-                : _vm._e()
-            ],
-            1
-          )
+                    ),
+                    _vm._v(" "),
+                    _vm._l(_vm.sortProject(_vm.projects), function(project) {
+                      return _c(
+                        "tr",
+                        [
+                          _vm._l(project, function(data, key) {
+                            return _vm.render.includes(key)
+                              ? _c("td", [
+                                  key == "active"
+                                    ? _c("span", [
+                                        _vm._v(
+                                          "\n                                    " +
+                                            _vm._s(_vm.activePrint(data)) +
+                                            "\n                                "
+                                        )
+                                      ])
+                                    : _c("span", [
+                                        _vm._v(
+                                          "\n                                    " +
+                                            _vm._s(data) +
+                                            "\n                                "
+                                        )
+                                      ])
+                                ])
+                              : _vm._e()
+                          }),
+                          _vm._v(" "),
+                          _c("td", [
+                            _c("span", [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-secondary",
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.openModal(project.id)
+                                    }
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    "Edit\n                                "
+                                  )
+                                ]
+                              )
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _c(
+                              "a",
+                              {
+                                staticClass: "btn btn-primary",
+                                attrs: { href: "/project_editor/" + project.id }
+                              },
+                              [
+                                _vm._v(
+                                  "\n                                    Open\n                                "
+                                )
+                              ]
+                            )
+                          ])
+                        ],
+                        2
+                      )
+                    })
+                  ],
+                  2
+                ),
+                _vm._v(" "),
+                _vm.isModalVisible
+                  ? _c("project-modal", {
+                      attrs: { modal_id: _vm.modal_id },
+                      on: {
+                        "exit-no-change": _vm.exitNoChange,
+                        "exit-with-change": _vm.exitWithChange,
+                        "exit-delete": _vm.exitWithDelete
+                      }
+                    })
+                  : _vm._e()
+              ],
+              1
+            )
+          ])
         ])
       ])
-    ])
-  ])
+    ]
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -41704,132 +41718,138 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c("div", { staticClass: "row justify-content-center" }, [
-      _c("div", { staticClass: "col-md-8" }, [
-        _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "card-header" }, [
-            _vm._v("Transaction List")
-          ]),
-          _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "card-body" },
-            [
-              _vm.update_msg
-                ? _c(
-                    "div",
-                    {
-                      staticClass: "alert alert-success",
-                      attrs: { role: "alert" }
-                    },
-                    [
-                      _vm._v(
-                        "\n                        " +
-                          _vm._s(_vm.update_msg) +
-                          "\n                    "
-                      )
-                    ]
-                  )
-                : _vm._e(),
-              _vm._v(" "),
-              _c(
-                "table",
-                { staticClass: "table table-striped" },
-                [
-                  _c(
-                    "tr",
-                    [
-                      _vm._l(_vm.headers, function(h) {
-                        return Object.values(_vm.translate).indexOf(h) > -1
-                          ? _c("th", [_vm._v(_vm._s(h))])
-                          : _vm._e()
-                      }),
-                      _vm._v(" "),
-                      _c("th", [_vm._v("Link")])
-                    ],
-                    2
-                  ),
-                  _vm._v(" "),
-                  _vm._l(_vm.sortTran(_vm.transactions), function(transaction) {
-                    return _c(
+  return _c(
+    "div",
+    { staticClass: "container", attrs: { id: "transactions_page" } },
+    [
+      _c("div", { staticClass: "row justify-content-center" }, [
+        _c("div", { staticClass: "col-md-8" }, [
+          _c("div", { staticClass: "card" }, [
+            _c("div", { staticClass: "card-header" }, [
+              _vm._v("Transaction List")
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "card-body" },
+              [
+                _vm.update_msg
+                  ? _c(
+                      "div",
+                      {
+                        staticClass: "alert alert-success",
+                        attrs: { role: "alert" }
+                      },
+                      [
+                        _vm._v(
+                          "\n                        " +
+                            _vm._s(_vm.update_msg) +
+                            "\n                    "
+                        )
+                      ]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _c(
+                  "table",
+                  { staticClass: "table table-striped" },
+                  [
+                    _c(
                       "tr",
                       [
-                        _vm._l(transaction, function(data, key) {
-                          return _vm.render.includes(key)
-                            ? _c("td", [
-                                _vm._v(
-                                  "\n                                " +
-                                    _vm._s(data) +
-                                    "\n\n                            "
-                                )
-                              ])
+                        _vm._l(_vm.headers, function(h) {
+                          return Object.values(_vm.translate).indexOf(h) > -1
+                            ? _c("th", [_vm._v(_vm._s(h))])
                             : _vm._e()
                         }),
                         _vm._v(" "),
-                        _c("td", [
-                          transaction.status == "Linked"
-                            ? _c(
-                                "button",
-                                {
-                                  staticClass: "btn btn-secondary",
-                                  attrs: { type: "button" },
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.openModal(
-                                        transaction.number,
-                                        transaction.provider
-                                      )
-                                    }
-                                  }
-                                },
-                                [_vm._v("Edit Link")]
-                              )
-                            : _c(
-                                "button",
-                                {
-                                  staticClass: "btn btn-success",
-                                  attrs: { type: "button" },
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.openModal(
-                                        transaction.number,
-                                        transaction.provider
-                                      )
-                                    }
-                                  }
-                                },
-                                [_vm._v("Add Link")]
-                              )
-                        ])
+                        _c("th", [_vm._v("Link")])
                       ],
                       2
-                    )
-                  })
-                ],
-                2
-              ),
-              _vm._v(" "),
-              _vm.isModalVisible
-                ? _c("cost-link-modal", {
-                    attrs: {
-                      modal_id: _vm.modal_id,
-                      modal_provider: _vm.modal_provider
-                    },
-                    on: {
-                      "exit-no-change": _vm.exitNoChange,
-                      "exit-with-change": _vm.exitWithChange,
-                      "exit-with-delete": _vm.exitWithDelete
-                    }
-                  })
-                : _vm._e()
-            ],
-            1
-          )
+                    ),
+                    _vm._v(" "),
+                    _vm._l(_vm.sortTran(_vm.transactions), function(
+                      transaction
+                    ) {
+                      return _c(
+                        "tr",
+                        [
+                          _vm._l(transaction, function(data, key) {
+                            return _vm.render.includes(key)
+                              ? _c("td", [
+                                  _vm._v(
+                                    "\n                                " +
+                                      _vm._s(data) +
+                                      "\n\n                            "
+                                  )
+                                ])
+                              : _vm._e()
+                          }),
+                          _vm._v(" "),
+                          _c("td", [
+                            transaction.status == "Linked"
+                              ? _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-secondary",
+                                    attrs: { type: "button" },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.openModal(
+                                          transaction.number,
+                                          transaction.provider
+                                        )
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Edit Link")]
+                                )
+                              : _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-success",
+                                    attrs: { type: "button" },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.openModal(
+                                          transaction.number,
+                                          transaction.provider
+                                        )
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Add Link")]
+                                )
+                          ])
+                        ],
+                        2
+                      )
+                    })
+                  ],
+                  2
+                ),
+                _vm._v(" "),
+                _vm.isModalVisible
+                  ? _c("cost-link-modal", {
+                      attrs: {
+                        modal_id: _vm.modal_id,
+                        modal_provider: _vm.modal_provider
+                      },
+                      on: {
+                        "exit-no-change": _vm.exitNoChange,
+                        "exit-with-change": _vm.exitWithChange,
+                        "exit-with-delete": _vm.exitWithDelete
+                      }
+                    })
+                  : _vm._e()
+              ],
+              1
+            )
+          ])
         ])
       ])
-    ])
-  ])
+    ]
+  )
 }
 var staticRenderFns = []
 render._withStripped = true

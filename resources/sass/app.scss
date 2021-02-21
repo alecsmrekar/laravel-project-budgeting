@@ -7,5 +7,75 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
-// Custom
-@import 'custom.css';
+.table {
+    display: table;
+}
+
+.tr {
+    display: table-row;
+}
+
+.td {
+    display: table-cell;
+    padding: 5px;
+}
+
+@media (min-width: 768px) {
+    .col-md-8 {
+        min-width: 100%;
+    }
+
+    .modal-dialog {
+        min-width: 576px;
+    }
+}
+
+#cashflow_page #project_filter select {
+    max-width: fit-content;
+}
+
+#cashflow_page #project_filter * {
+    margin: 5px;
+}
+
+#transactions_page .modal-body {
+    form {
+        margin: 0 auto;
+    }
+
+    label, select {
+        display: inline-block;
+    }
+
+    label {
+        width: 20%;
+        text-align: left;
+    }
+
+    label + select {
+        margin: 0 6% 0 4%;
+    }
+
+    select {
+        width: 60%;
+    }
+}
+
+#project_list_page .modal-content {
+    label, input {
+        display: inline-block;
+    }
+    label {
+        width: 30%;
+        text-align: left;
+    }
+    label + input {
+        margin: 0 6% 0 4%;
+    }
+    input {
+        width: 40%;
+    }
+    #active {
+        width: auto;
+    }
+}

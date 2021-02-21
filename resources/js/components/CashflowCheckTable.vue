@@ -1,18 +1,19 @@
 <template>
-    <div class="container">
+    <div class="container" id="cashflow_page">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header">Cashflow Check</div>
                     <div class="card-body">
 
+                        <div id="project_filter">
                         <span>Filter projects:</span>
                         <select class="custom-select" @change="projectFilter($event)" id="filter_projects" v-model="filter_projects">
                             <option v-for="(label, opt) in filter_projects_options" v-bind:value="opt">{{
                                     label
                                 }}
                             </option>
-                        </select><br><br>
+                        </select></div><br><br>
 
                         <table class="table table-striped">
 
