@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Http\Controllers\CostController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models;
 
 class CostLink extends Model {
     use HasFactory;

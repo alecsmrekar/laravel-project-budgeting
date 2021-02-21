@@ -8,15 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Project extends Model {
     use HasFactory;
 
-    // Convert object to array
-    public static function obj_to_array($data): array {
-        return (array) $data->attributes;
-    }
-
     // Return a single project
     public static function read_one($id): array {
         $data = self::find($id);
-        return self::obj_to_array($data);
+        return $data->getAttributes();
     }
 
     // Update project and return data
@@ -29,7 +24,7 @@ class Project extends Model {
     public static function read_all(): array {
         $data = [];
         foreach (self::all()->getIterator() as $item) {
-            $add = self::obj_to_array($item);
+            $add = $item->getAttributes();
             array_push($data, $add);
         }
         return $data;

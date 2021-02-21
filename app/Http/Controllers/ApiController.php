@@ -76,7 +76,7 @@ class ApiController extends Controller {
 
     public function createCost(Request $request) {
         $input = $request->all();
-        return CostController::create($input);
+        return Models\Cost::create($input);
     }
 
     public function createLink(Request $request) {
@@ -87,7 +87,7 @@ class ApiController extends Controller {
     public function deleteCost(Request $request, $id) {
         if (is_numeric($id)) {
             $id = intval($id);
-            CostController::delete_cost($id);
+            Models\Cost::delete_cost($id);
             return Response::HTTP_OK;
         }
         return Response::HTTP_BAD_REQUEST;
@@ -114,7 +114,7 @@ class ApiController extends Controller {
     public function getTree(Request $request, $id) {
         if (is_numeric($id)) {
             $id = intval($id);
-            return Models\Cost::get_tree($id);
+            return CostController::get_tree($id);
         }
         return Response::HTTP_BAD_REQUEST;
     }
@@ -124,7 +124,7 @@ class ApiController extends Controller {
             $id = intval($id);
             $input = $request->all();
             $input['id'] = $id;
-            return CostController::update_cost($input);
+            return Models\Cost::update_cost($input);
         }
         return Response::HTTP_BAD_REQUEST;
     }

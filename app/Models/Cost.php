@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 class Cost extends Model {
     use HasFactory;
 
-
     public static function get_cost_array($pid=false, $cid=false) {
         $data = [];
         $query = self::query();
@@ -21,46 +20,10 @@ class Cost extends Model {
         }
 
         foreach ($query->get() as $item) {
-            $add = self::obj_to_array($item);
+            $add = $item->getAttributes();
             array_push($data, $add);
         }
         return $data;
-    }
-
-    // Converts the object to an array
-    public static function obj_to_array($item) {
-        return (array) $item->attributes;
-    }
-
-    public static function which_costs_are_linked($pid) {
-        $output = [];
-        $links = CostLink::link_cost_to_transactions($pid);
-        foreach ($links as $i) {
-            array_push($output, $i['cost_id']);
-        }
-        return $output;
-    }
-
-    /*
-     * Returns a projects cost tree
-     * Departments are array keys
-     * Items are dictionaries of costs using their id as the key
-     */
-    public static function get_tree($id) {
-        $all = CostController::get_costs($id, false);
-        $links = self::which_costs_are_linked($id);
-        $output = [];
-        foreach ($all as $item) {
-            $add = [];
-            $is_linked = (in_array($item['id'], $links) ? '' : ' -> not yet linked');
-            $service_full_name = self::generate_service_title($item);
-            $dep = $item['department'];
-            if (array_key_exists($dep, $output) == FALSE) {
-                $output[$dep] = [];
-            }
-            $output[$dep][$item['id']] = $service_full_name . $is_linked;
-        }
-        return $output;
     }
 
     public static function generate_service_title($item){
@@ -83,13 +46,6 @@ class Cost extends Model {
         return $service_full_name;
     }
 
-    public static function extract_costs_actuals_info($cost_array) {
-        $actuals_field = self::get_actuals_field();
-        return [
-            'manual' => $cost_array[$actuals_field],
-            'budget' => $cost_array['budget']
-        ];
-    }
 
     // Returns the name of the field containing cost manual actuals
     public static function get_actuals_field() {
@@ -115,7 +71,23 @@ class Cost extends Model {
         $cost->manual_actuals_tag = $data['manual_actuals_tag'];
         $cost->manual_actuals_date = $data['manual_actuals_date'];
         $cost->save();
-        return self::obj_to_array($cost);
+        return $cost->getAttributes();
+    }
+
+    public static function create($data, $get_actuals = TRUE) {
+        $cost = self::write($data, FALSE, $get_actuals);
+        return CostController::read_one($cost['id'], $get_actuals);
+    }
+
+    public static function update_cost($data, $get_actuals = TRUE) {
+        $cost = self::find($data['id']);
+        $cost = self::write($data, $cost, $get_actuals);
+        return CostController::read_one($cost['id'], $get_actuals);
+    }
+
+    public static function delete_cost($id) {
+        $item = self::find($id);
+        $item->delete();
     }
 
 }
