@@ -32,7 +32,6 @@
                                 <td v-for="i in Object.keys(headers).length-2"></td>
                                 <td>{{ sum }}</td>
                             </tr>
-
                         </table>
                     </div>
                 </div>

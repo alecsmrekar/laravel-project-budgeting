@@ -21,9 +21,6 @@ class ProjectTest extends TestCase {
         ]);
     }
 
-    /**
-     * Test if creating a project via the API return an object.
-     */
     public function test_if_unauth_api_access_is_denied() {
         $post = [
             'name' => 'Project',
@@ -34,9 +31,6 @@ class ProjectTest extends TestCase {
         $response->assertStatus(401);
     }
 
-    /**
-     * Test if creating a project via the API return an object.
-     */
     public function test_if_creating_project_via_api_returns_object() {
         $post = [
             'name' => 'Project',
@@ -53,9 +47,6 @@ class ProjectTest extends TestCase {
             ]);
     }
 
-    /**
-     * Test if creating a project via the API return an object.
-     */
     public function test_if_creating_project_via_api_returns_id() {
         $post = [
             'name' => 'Project',

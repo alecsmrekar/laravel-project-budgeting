@@ -11,44 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ApiController extends Controller {
 
-    public function getCostActuals(Request $request, $cid) {
-        if (is_numeric($cid)) {
-            $project_id = intval($cid);
-            $providers = [Models\Revolut::class];
-            $data = [];
-            foreach ($providers as $p) {
-                $val = $p::get_cost_actuals($cid);
-                $data = array_merge($data, $val);
-            }
-            return $data;
-        }
-        return Response::HTTP_BAD_REQUEST;
-    }
-
-    public function getAllActuals(Request $request) {
-        $providers = [Models\Revolut::class];
-        $data = [];
-        foreach ($providers as $p) {
-            $val = $p::get_all_actuals();
-            $data = array_merge($data, $val);
-        }
-        return $data;
-    }
-
-    public function getProjectActuals(Request $request, $project_id) {
-        if (is_numeric($project_id)) {
-            $project_id = intval($project_id);
-            $providers = [Models\Revolut::class];
-            $data = [];
-            foreach ($providers as $p) {
-                $val = $p::get_project_actuals($project_id);
-                $data = array_merge($data, $val);
-            }
-            return $data;
-        }
-        return Response::HTTP_BAD_REQUEST;
-    }
-
 
     public function getAllCosts2(Request $request, $project_id) {
         if (is_numeric($project_id)) {
