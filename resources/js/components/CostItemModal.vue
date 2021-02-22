@@ -147,32 +147,33 @@ export default {
                 <form @submit="checkForm">
                     <div class="modal-body">
 
-                        <label>Department:</label><br>
+                        <div class="form_main">
+                        <label>Department:</label>
                         <input type="text" id="department" name="department" v-model="department"><br>
-                        <label>Sector:</label><br>
+                        <label>Sector:</label>
                         <input type="text" id="sector" name="sector" v-model="sector"><br>
-                        <label>Service:</label><br>
+                        <label>Service:</label>
                         <input type="text" id="service" name="service" v-model="service" required><br>
-                        <label>Person:</label><br>
+                        <label>Person:</label>
                         <input type="text" id="person" name="person" v-model="person"><br>
-                        <label>Company:</label><br>
+                        <label>Company:</label>
                         <input type="text" id="company" name="company" v-model="company"><br>
-                        <label>Budget (EUR):</label><br>
+                        <label>Budget (EUR):</label>
                         <input type="text" id="budget" name="budget" v-model="budget" required><br>
-                        <label>Tax Rate (%):</label><br>
+                        <label>Tax Rate (%):</label>
                         <input type="text" id="tax_rate" name="tax_rate" v-model="tax_rate" required><br>
-                        <label>Comment:</label><br>
-                        <input type="text" id="comment" name="comment" v-model="comment"><br>
-                        <label>Manual actual cost entry:</label><br>
+                        <label>Comment:</label>
+                        <input type="text" id="comment" name="comment" v-model="comment"></div>
+                        <div class="form_actuals">
+                        <label>Manual actual cost entry:</label>
                         <input type="text" id="manual_actuals" name="manual_actuals" v-model="manual_actuals"><br>
-                        <label>Manual cost date:</label><br>
+                        <label>Manual cost date:</label>
                         <input type="date" id="manual_actuals_date" name="manual_actuals_date" v-model="manual_actuals_date"><br>
-                        <label>Manual cost tag:</label><br>
-                        <input type="text" id="tag" name="tag" v-model="tag"><br>
-                        <label>Set cost to be final:</label><br>
+                        <label>Manual cost tag:</label>
+                        <input type="text" id="tag" name="tag" v-model="tag"></div>
+                        <div class="form_final"><label>Set cost to be final:</label>
                         <input type="checkbox" id="final" name="final" v-model="final"
-                               :checked="final"><br>
-                        <br>
+                               :checked="final"></div>
                     </div>
                     <div class="modal-footer">
                         <button @click="cancelClicked" type="button" class="btn btn-secondary" data-bs-dismiss="modal">

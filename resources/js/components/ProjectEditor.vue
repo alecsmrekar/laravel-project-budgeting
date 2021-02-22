@@ -148,7 +148,7 @@ export default {
 };
 </script>
 <template>
-    <div class="container">
+    <div class="container" id="project_editor_page">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">

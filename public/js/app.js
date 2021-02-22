@@ -40427,348 +40427,337 @@ var render = function() {
           _vm._v(" "),
           _c("form", { on: { submit: _vm.checkForm } }, [
             _c("div", { staticClass: "modal-body" }, [
-              _c("label", [_vm._v("Department:")]),
-              _c("br"),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.department,
-                    expression: "department"
-                  }
-                ],
-                attrs: { type: "text", id: "department", name: "department" },
-                domProps: { value: _vm.department },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
+              _c("div", { staticClass: "form_main" }, [
+                _c("label", [_vm._v("Department:")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.department,
+                      expression: "department"
                     }
-                    _vm.department = $event.target.value
-                  }
-                }
-              }),
-              _c("br"),
-              _vm._v(" "),
-              _c("label", [_vm._v("Sector:")]),
-              _c("br"),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.sector,
-                    expression: "sector"
-                  }
-                ],
-                attrs: { type: "text", id: "sector", name: "sector" },
-                domProps: { value: _vm.sector },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.sector = $event.target.value
-                  }
-                }
-              }),
-              _c("br"),
-              _vm._v(" "),
-              _c("label", [_vm._v("Service:")]),
-              _c("br"),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.service,
-                    expression: "service"
-                  }
-                ],
-                attrs: {
-                  type: "text",
-                  id: "service",
-                  name: "service",
-                  required: ""
-                },
-                domProps: { value: _vm.service },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.service = $event.target.value
-                  }
-                }
-              }),
-              _c("br"),
-              _vm._v(" "),
-              _c("label", [_vm._v("Person:")]),
-              _c("br"),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.person,
-                    expression: "person"
-                  }
-                ],
-                attrs: { type: "text", id: "person", name: "person" },
-                domProps: { value: _vm.person },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.person = $event.target.value
-                  }
-                }
-              }),
-              _c("br"),
-              _vm._v(" "),
-              _c("label", [_vm._v("Company:")]),
-              _c("br"),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.company,
-                    expression: "company"
-                  }
-                ],
-                attrs: { type: "text", id: "company", name: "company" },
-                domProps: { value: _vm.company },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.company = $event.target.value
-                  }
-                }
-              }),
-              _c("br"),
-              _vm._v(" "),
-              _c("label", [_vm._v("Budget (EUR):")]),
-              _c("br"),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.budget,
-                    expression: "budget"
-                  }
-                ],
-                attrs: {
-                  type: "text",
-                  id: "budget",
-                  name: "budget",
-                  required: ""
-                },
-                domProps: { value: _vm.budget },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.budget = $event.target.value
-                  }
-                }
-              }),
-              _c("br"),
-              _vm._v(" "),
-              _c("label", [_vm._v("Tax Rate (%):")]),
-              _c("br"),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.tax_rate,
-                    expression: "tax_rate"
-                  }
-                ],
-                attrs: {
-                  type: "text",
-                  id: "tax_rate",
-                  name: "tax_rate",
-                  required: ""
-                },
-                domProps: { value: _vm.tax_rate },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.tax_rate = $event.target.value
-                  }
-                }
-              }),
-              _c("br"),
-              _vm._v(" "),
-              _c("label", [_vm._v("Comment:")]),
-              _c("br"),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.comment,
-                    expression: "comment"
-                  }
-                ],
-                attrs: { type: "text", id: "comment", name: "comment" },
-                domProps: { value: _vm.comment },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.comment = $event.target.value
-                  }
-                }
-              }),
-              _c("br"),
-              _vm._v(" "),
-              _c("label", [_vm._v("Manual actual cost entry:")]),
-              _c("br"),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.manual_actuals,
-                    expression: "manual_actuals"
-                  }
-                ],
-                attrs: {
-                  type: "text",
-                  id: "manual_actuals",
-                  name: "manual_actuals"
-                },
-                domProps: { value: _vm.manual_actuals },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.manual_actuals = $event.target.value
-                  }
-                }
-              }),
-              _c("br"),
-              _vm._v(" "),
-              _c("label", [_vm._v("Manual cost date:")]),
-              _c("br"),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.manual_actuals_date,
-                    expression: "manual_actuals_date"
-                  }
-                ],
-                attrs: {
-                  type: "date",
-                  id: "manual_actuals_date",
-                  name: "manual_actuals_date"
-                },
-                domProps: { value: _vm.manual_actuals_date },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.manual_actuals_date = $event.target.value
-                  }
-                }
-              }),
-              _c("br"),
-              _vm._v(" "),
-              _c("label", [_vm._v("Manual cost tag:")]),
-              _c("br"),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.tag,
-                    expression: "tag"
-                  }
-                ],
-                attrs: { type: "text", id: "tag", name: "tag" },
-                domProps: { value: _vm.tag },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.tag = $event.target.value
-                  }
-                }
-              }),
-              _c("br"),
-              _vm._v(" "),
-              _c("label", [_vm._v("Set cost to be final:")]),
-              _c("br"),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.final,
-                    expression: "final"
-                  }
-                ],
-                attrs: { type: "checkbox", id: "final", name: "final" },
-                domProps: {
-                  checked: _vm.final,
-                  checked: Array.isArray(_vm.final)
-                    ? _vm._i(_vm.final, null) > -1
-                    : _vm.final
-                },
-                on: {
-                  change: function($event) {
-                    var $$a = _vm.final,
-                      $$el = $event.target,
-                      $$c = $$el.checked ? true : false
-                    if (Array.isArray($$a)) {
-                      var $$v = null,
-                        $$i = _vm._i($$a, $$v)
-                      if ($$el.checked) {
-                        $$i < 0 && (_vm.final = $$a.concat([$$v]))
-                      } else {
-                        $$i > -1 &&
-                          (_vm.final = $$a
-                            .slice(0, $$i)
-                            .concat($$a.slice($$i + 1)))
+                  ],
+                  attrs: { type: "text", id: "department", name: "department" },
+                  domProps: { value: _vm.department },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
                       }
-                    } else {
-                      _vm.final = $$c
+                      _vm.department = $event.target.value
                     }
                   }
-                }
-              }),
-              _c("br"),
+                }),
+                _c("br"),
+                _vm._v(" "),
+                _c("label", [_vm._v("Sector:")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.sector,
+                      expression: "sector"
+                    }
+                  ],
+                  attrs: { type: "text", id: "sector", name: "sector" },
+                  domProps: { value: _vm.sector },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.sector = $event.target.value
+                    }
+                  }
+                }),
+                _c("br"),
+                _vm._v(" "),
+                _c("label", [_vm._v("Service:")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.service,
+                      expression: "service"
+                    }
+                  ],
+                  attrs: {
+                    type: "text",
+                    id: "service",
+                    name: "service",
+                    required: ""
+                  },
+                  domProps: { value: _vm.service },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.service = $event.target.value
+                    }
+                  }
+                }),
+                _c("br"),
+                _vm._v(" "),
+                _c("label", [_vm._v("Person:")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.person,
+                      expression: "person"
+                    }
+                  ],
+                  attrs: { type: "text", id: "person", name: "person" },
+                  domProps: { value: _vm.person },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.person = $event.target.value
+                    }
+                  }
+                }),
+                _c("br"),
+                _vm._v(" "),
+                _c("label", [_vm._v("Company:")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.company,
+                      expression: "company"
+                    }
+                  ],
+                  attrs: { type: "text", id: "company", name: "company" },
+                  domProps: { value: _vm.company },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.company = $event.target.value
+                    }
+                  }
+                }),
+                _c("br"),
+                _vm._v(" "),
+                _c("label", [_vm._v("Budget (EUR):")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.budget,
+                      expression: "budget"
+                    }
+                  ],
+                  attrs: {
+                    type: "text",
+                    id: "budget",
+                    name: "budget",
+                    required: ""
+                  },
+                  domProps: { value: _vm.budget },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.budget = $event.target.value
+                    }
+                  }
+                }),
+                _c("br"),
+                _vm._v(" "),
+                _c("label", [_vm._v("Tax Rate (%):")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.tax_rate,
+                      expression: "tax_rate"
+                    }
+                  ],
+                  attrs: {
+                    type: "text",
+                    id: "tax_rate",
+                    name: "tax_rate",
+                    required: ""
+                  },
+                  domProps: { value: _vm.tax_rate },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.tax_rate = $event.target.value
+                    }
+                  }
+                }),
+                _c("br"),
+                _vm._v(" "),
+                _c("label", [_vm._v("Comment:")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.comment,
+                      expression: "comment"
+                    }
+                  ],
+                  attrs: { type: "text", id: "comment", name: "comment" },
+                  domProps: { value: _vm.comment },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.comment = $event.target.value
+                    }
+                  }
+                })
+              ]),
               _vm._v(" "),
-              _c("br")
+              _c("div", { staticClass: "form_actuals" }, [
+                _c("label", [_vm._v("Manual actual cost entry:")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.manual_actuals,
+                      expression: "manual_actuals"
+                    }
+                  ],
+                  attrs: {
+                    type: "text",
+                    id: "manual_actuals",
+                    name: "manual_actuals"
+                  },
+                  domProps: { value: _vm.manual_actuals },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.manual_actuals = $event.target.value
+                    }
+                  }
+                }),
+                _c("br"),
+                _vm._v(" "),
+                _c("label", [_vm._v("Manual cost date:")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.manual_actuals_date,
+                      expression: "manual_actuals_date"
+                    }
+                  ],
+                  attrs: {
+                    type: "date",
+                    id: "manual_actuals_date",
+                    name: "manual_actuals_date"
+                  },
+                  domProps: { value: _vm.manual_actuals_date },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.manual_actuals_date = $event.target.value
+                    }
+                  }
+                }),
+                _c("br"),
+                _vm._v(" "),
+                _c("label", [_vm._v("Manual cost tag:")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.tag,
+                      expression: "tag"
+                    }
+                  ],
+                  attrs: { type: "text", id: "tag", name: "tag" },
+                  domProps: { value: _vm.tag },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.tag = $event.target.value
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "form_final" }, [
+                _c("label", [_vm._v("Set cost to be final:")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.final,
+                      expression: "final"
+                    }
+                  ],
+                  attrs: { type: "checkbox", id: "final", name: "final" },
+                  domProps: {
+                    checked: _vm.final,
+                    checked: Array.isArray(_vm.final)
+                      ? _vm._i(_vm.final, null) > -1
+                      : _vm.final
+                  },
+                  on: {
+                    change: function($event) {
+                      var $$a = _vm.final,
+                        $$el = $event.target,
+                        $$c = $$el.checked ? true : false
+                      if (Array.isArray($$a)) {
+                        var $$v = null,
+                          $$i = _vm._i($$a, $$v)
+                        if ($$el.checked) {
+                          $$i < 0 && (_vm.final = $$a.concat([$$v]))
+                        } else {
+                          $$i > -1 &&
+                            (_vm.final = $$a
+                              .slice(0, $$i)
+                              .concat($$a.slice($$i + 1)))
+                        }
+                      } else {
+                        _vm.final = $$c
+                      }
+                    }
+                  }
+                })
+              ])
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "modal-footer" }, [
@@ -41315,205 +41304,209 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c("div", { staticClass: "row justify-content-center" }, [
-      _c("div", { staticClass: "col-md-8" }, [
-        _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "card-header" }, [
-            _vm._v("Project Editor: "),
-            _c("span", { staticStyle: { "font-style": "italic" } }, [
-              _vm._v(_vm._s(_vm.cname))
-            ])
-          ]),
-          _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "card-body" },
-            [
-              _c("div", [_vm._v("Project Name: " + _vm._s(_vm.cname))]),
-              _vm._v(" "),
-              _c("div", [_vm._v("Project Client: " + _vm._s(_vm.cclient))]),
-              _vm._v(" "),
-              _c("div", [_vm._v("Project Active: " + _vm._s(_vm.active))]),
-              _vm._v(" "),
-              _c("br"),
-              _vm._v(" "),
-              _vm.update_msg
-                ? _c(
-                    "div",
+  return _c(
+    "div",
+    { staticClass: "container", attrs: { id: "project_editor_page" } },
+    [
+      _c("div", { staticClass: "row justify-content-center" }, [
+        _c("div", { staticClass: "col-md-8" }, [
+          _c("div", { staticClass: "card" }, [
+            _c("div", { staticClass: "card-header" }, [
+              _vm._v("Project Editor: "),
+              _c("span", { staticStyle: { "font-style": "italic" } }, [
+                _vm._v(_vm._s(_vm.cname))
+              ])
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "card-body" },
+              [
+                _c("div", [_vm._v("Project Name: " + _vm._s(_vm.cname))]),
+                _vm._v(" "),
+                _c("div", [_vm._v("Project Client: " + _vm._s(_vm.cclient))]),
+                _vm._v(" "),
+                _c("div", [_vm._v("Project Active: " + _vm._s(_vm.active))]),
+                _vm._v(" "),
+                _c("br"),
+                _vm._v(" "),
+                _vm.update_msg
+                  ? _c(
+                      "div",
+                      {
+                        staticClass: "alert alert-success",
+                        attrs: { role: "alert" }
+                      },
+                      [
+                        _vm._v(
+                          "\n                        " +
+                            _vm._s(_vm.update_msg) +
+                            "\n                    "
+                        )
+                      ]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _c("div", [
+                  _c(
+                    "button",
                     {
-                      staticClass: "alert alert-success",
-                      attrs: { role: "alert" }
-                    },
-                    [
-                      _vm._v(
-                        "\n                        " +
-                          _vm._s(_vm.update_msg) +
-                          "\n                    "
-                      )
-                    ]
-                  )
-                : _vm._e(),
-              _vm._v(" "),
-              _c("div", [
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary",
-                    attrs: { type: "button" },
-                    on: {
-                      click: function($event) {
-                        return _vm.openModal(-1)
+                      staticClass: "btn btn-primary",
+                      attrs: { type: "button" },
+                      on: {
+                        click: function($event) {
+                          return _vm.openModal(-1)
+                        }
                       }
+                    },
+                    [_vm._v("Add Cost Item")]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("br"),
+                _vm._v(" "),
+                _c("span", [_vm._v("Filter on final status:")]),
+                _vm._v(" "),
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.filter_final,
+                        expression: "filter_final"
+                      }
+                    ],
+                    staticClass: "custom-select",
+                    attrs: { id: "filter_final" },
+                    on: {
+                      change: [
+                        function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.filter_final = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        },
+                        function($event) {
+                          return _vm.finalFilter($event)
+                        }
+                      ]
                     }
                   },
-                  [_vm._v("Add Cost Item")]
-                )
-              ]),
-              _vm._v(" "),
-              _c("br"),
-              _vm._v(" "),
-              _c("span", [_vm._v("Filter on final status:")]),
-              _vm._v(" "),
-              _c(
-                "select",
-                {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.filter_final,
-                      expression: "filter_final"
-                    }
-                  ],
-                  staticClass: "custom-select",
-                  attrs: { id: "filter_final" },
-                  on: {
-                    change: [
-                      function($event) {
-                        var $$selectedVal = Array.prototype.filter
-                          .call($event.target.options, function(o) {
-                            return o.selected
-                          })
-                          .map(function(o) {
-                            var val = "_value" in o ? o._value : o.value
-                            return val
-                          })
-                        _vm.filter_final = $event.target.multiple
-                          ? $$selectedVal
-                          : $$selectedVal[0]
-                      },
-                      function($event) {
-                        return _vm.finalFilter($event)
-                      }
-                    ]
-                  }
-                },
-                _vm._l(_vm.filter_final_options, function(label, opt) {
-                  return _c("option", { domProps: { value: opt } }, [
-                    _vm._v(_vm._s(label))
-                  ])
-                }),
-                0
-              ),
-              _c("br"),
-              _c("br"),
-              _vm._v(" "),
-              _c(
-                "table",
-                { staticClass: "table table-striped" },
-                [
-                  _c(
-                    "tr",
-                    [
-                      _vm._l(_vm.headers, function(h) {
-                        return Object.values(_vm.translate).indexOf(h) > -1
-                          ? _c("th", [_vm._v(_vm._s(h))])
-                          : _vm._e()
-                      }),
-                      _vm._v(" "),
-                      _c("th", [_vm._v("Edit")])
-                    ],
-                    2
-                  ),
-                  _vm._v(" "),
-                  _vm._l(_vm.sortCost(_vm.costs), function(cost) {
-                    return _vm.filter_final === -1 ||
-                      cost.final === _vm.filter_final
-                      ? _c(
-                          "tr",
-                          [
-                            _vm._l(cost, function(item, key) {
-                              return _vm.render.includes(key)
-                                ? _c("td", [
-                                    key == "tax_rate"
-                                      ? _c("span", [
-                                          _vm._v(
-                                            "\n                                " +
-                                              _vm._s(item * 100) +
-                                              "\n                                "
-                                          )
-                                        ])
-                                      : _c("span", [
-                                          _vm._v(
-                                            "\n                                    " +
-                                              _vm._s(item) +
-                                              "\n                                "
-                                          )
-                                        ])
-                                  ])
-                                : _vm._e()
-                            }),
-                            _vm._v(" "),
-                            _c("td", [
-                              _c(
-                                "button",
-                                {
-                                  staticClass: "btn btn-primary",
-                                  attrs: { type: "button" },
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.openModal(cost.id)
+                  _vm._l(_vm.filter_final_options, function(label, opt) {
+                    return _c("option", { domProps: { value: opt } }, [
+                      _vm._v(_vm._s(label))
+                    ])
+                  }),
+                  0
+                ),
+                _c("br"),
+                _c("br"),
+                _vm._v(" "),
+                _c(
+                  "table",
+                  { staticClass: "table table-striped" },
+                  [
+                    _c(
+                      "tr",
+                      [
+                        _vm._l(_vm.headers, function(h) {
+                          return Object.values(_vm.translate).indexOf(h) > -1
+                            ? _c("th", [_vm._v(_vm._s(h))])
+                            : _vm._e()
+                        }),
+                        _vm._v(" "),
+                        _c("th", [_vm._v("Edit")])
+                      ],
+                      2
+                    ),
+                    _vm._v(" "),
+                    _vm._l(_vm.sortCost(_vm.costs), function(cost) {
+                      return _vm.filter_final === -1 ||
+                        cost.final === _vm.filter_final
+                        ? _c(
+                            "tr",
+                            [
+                              _vm._l(cost, function(item, key) {
+                                return _vm.render.includes(key)
+                                  ? _c("td", [
+                                      key == "tax_rate"
+                                        ? _c("span", [
+                                            _vm._v(
+                                              "\n                                " +
+                                                _vm._s(item * 100) +
+                                                "\n                                "
+                                            )
+                                          ])
+                                        : _c("span", [
+                                            _vm._v(
+                                              "\n                                    " +
+                                                _vm._s(item) +
+                                                "\n                                "
+                                            )
+                                          ])
+                                    ])
+                                  : _vm._e()
+                              }),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-primary",
+                                    attrs: { type: "button" },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.openModal(cost.id)
+                                      }
                                     }
-                                  }
-                                },
-                                [
-                                  _vm._v(
-                                    "Edit\n                                "
-                                  )
-                                ]
-                              )
-                            ])
-                          ],
-                          2
-                        )
-                      : _vm._e()
-                  })
-                ],
-                2
-              ),
-              _vm._v(" "),
-              _vm.isModalVisible
-                ? _c("new-cost-item", {
-                    attrs: {
-                      modal_id: _vm.modal_id,
-                      project_id: _vm.id,
-                      all_costs: _vm.costs
-                    },
-                    on: {
-                      "exit-no-change": _vm.exitNoChange,
-                      "exit-with-change": _vm.exitWithChange,
-                      "exit-delete": _vm.exitWithDelete
-                    }
-                  })
-                : _vm._e()
-            ],
-            1
-          )
+                                  },
+                                  [
+                                    _vm._v(
+                                      "Edit\n                                "
+                                    )
+                                  ]
+                                )
+                              ])
+                            ],
+                            2
+                          )
+                        : _vm._e()
+                    })
+                  ],
+                  2
+                ),
+                _vm._v(" "),
+                _vm.isModalVisible
+                  ? _c("new-cost-item", {
+                      attrs: {
+                        modal_id: _vm.modal_id,
+                        project_id: _vm.id,
+                        all_costs: _vm.costs
+                      },
+                      on: {
+                        "exit-no-change": _vm.exitNoChange,
+                        "exit-with-change": _vm.exitWithChange,
+                        "exit-delete": _vm.exitWithDelete
+                      }
+                    })
+                  : _vm._e()
+              ],
+              1
+            )
+          ])
         ])
       ])
-    ])
-  ])
+    ]
+  )
 }
 var staticRenderFns = []
 render._withStripped = true

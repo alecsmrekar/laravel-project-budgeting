@@ -11021,4 +11021,44 @@ a.text-dark:focus {
   width: auto;
 }
 
+#project_editor_page .modal-content label,
+#project_editor_page .modal-content input {
+  display: inline-block;
+}
+
+#project_editor_page .modal-content label {
+  width: 30%;
+  text-align: left;
+}
+
+#project_editor_page .modal-content label + input {
+  margin: 0 6% 0 4%;
+}
+
+#project_editor_page .modal-content input {
+  width: 50%;
+}
+
+#project_editor_page .modal-content .form_main {
+  padding-bottom: 20px;
+}
+
+#project_editor_page .modal-content .form_actuals {
+  padding-bottom: 20px;
+  padding-top: 20px;
+  border-top: 1px solid black;
+}
+
+#project_editor_page .modal-content .form_final {
+  padding-bottom: 20px;
+  padding-top: 20px;
+  border-top: 1px solid black;
+}
+
+#project_editor_page .modal-content #final {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
 
