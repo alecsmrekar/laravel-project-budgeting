@@ -11061,4 +11061,24 @@ a.text-dark:focus {
   width: fit-content;
 }
 
+#project_editor_page #filter_final {
+  max-width: -webkit-fit-content;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+}
+
+#project_editor_page #aggregates .agg {
+  font-weight: bold;
+}
+
+#manage_users_page select {
+  max-width: -webkit-fit-content;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+}
+
+#manage_users_page .table {
+  max-width: 600px;
+}
+
 

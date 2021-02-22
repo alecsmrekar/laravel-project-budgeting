@@ -115,3 +115,24 @@
         width: fit-content;
     }
 }
+
+#project_editor_page {
+    #filter_final {
+        max-width: fit-content;
+    }
+
+    #aggregates {
+        .agg {
+            font-weight: bold;
+        }
+    }
+}
+
+#manage_users_page {
+    select {
+    max-width: fit-content;
+    }
+    .table {
+        max-width: 600px;
+    }
+}

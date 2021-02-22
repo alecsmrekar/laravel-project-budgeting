@@ -4,7 +4,7 @@
 
 
 
-    <div class="container">
+    <div class="container" id="manage_users_page">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
@@ -33,9 +33,9 @@
                                 </div>
                                 @foreach($users as $user)
                                     <div class="tr">
-                                        <div class="td">{{$user->name}}</div>
-                                        <div class="td">{{$user->email}}</div>
-                                        <select class="custom-select-sm" name="{{$user->id}}" id="role">
+                                        <div class="td" id="name_field">{{$user->name}}</div>
+                                        <div class="td" id="email_field">{{$user->email}}</div>
+                                        <select class="custom-select" name="{{$user->id}}" id="role">
                                             @foreach($roles as $role)
                                                 <option value="{{ $role }}" {{ $role == $user->role ? 'selected' : '' }}>
                                                     {{ $role }}

@@ -2823,6 +2823,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => __WEBPACK_DEFAULT_EXPORT__
 /* harmony export */ });
 /* harmony import */ var _CostItemModal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CostItemModal */ "./resources/js/components/CostItemModal.vue");
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -2852,6 +2854,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   data: function data() {
     return {
       id: -1,
+      aggregate_class: 'agg',
       modal_id: -1,
       filter_final: -1,
       filter_final_options: {
@@ -2880,7 +2883,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         'actuals': 'Actual Cost',
         'diff': 'Diff vs Budget'
       },
-      render: []
+      render: [],
+      aggregates: {},
+      aggregate_rows: []
     };
   },
   methods: {
@@ -2974,6 +2979,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         }
 
         _this.generateHeaders();
+
+        _this.calcAggregates();
       })["catch"](function (error) {
         console.log(error);
       });
@@ -2992,6 +2999,101 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     },
     finalFilter: function finalFilter(event) {
       this.filter_final = parseInt(event.target.value);
+      this.calcAggregates();
+    },
+    calcAggregates: function calcAggregates() {
+      var filter = this.filter_final;
+      this.aggregates = {
+        'budget': 0,
+        'actuals': 0,
+        'diff': 0,
+        'deps': {}
+      };
+
+      for (var _i2 = 0, _Object$entries = Object.entries(this.sortCost(this.costs)); _i2 < _Object$entries.length; _i2++) {
+        var _Object$entries$_i = _slicedToArray(_Object$entries[_i2], 2),
+            key = _Object$entries$_i[0],
+            _row = _Object$entries$_i[1];
+
+        if (_row['final'] === filter || filter === -1) {
+          var dep = _row['department'];
+          var sector = _row['sector'];
+
+          if (!(dep in this.aggregates['deps'])) {
+            this.aggregates['deps'][dep] = {
+              'budget': 0,
+              'actuals': 0,
+              'diff': 0,
+              'children': _defineProperty({}, sector, {
+                'budget': 0,
+                'actuals': 0,
+                'diff': 0
+              })
+            };
+          } else if (!(sector in this.aggregates['deps'][dep]['children'])) {
+            this.aggregates['deps'][dep]['children'][sector] = {
+              'budget': 0,
+              'actuals': 0,
+              'diff': 0
+            };
+          }
+
+          this.aggregates['budget'] += _row['budget'];
+          this.aggregates['actuals'] += _row['actuals'];
+          this.aggregates['diff'] += _row['diff'];
+          this.aggregates['deps'][dep]['budget'] += _row['budget'];
+          this.aggregates['deps'][dep]['actuals'] += _row['actuals'];
+          this.aggregates['deps'][dep]['diff'] += _row['diff'];
+          this.aggregates['deps'][dep]['children'][sector]['budget'] += _row['budget'];
+          this.aggregates['deps'][dep]['children'][sector]['actuals'] += _row['actuals'];
+          this.aggregates['deps'][dep]['children'][sector]['diff'] += _row['diff'];
+        }
+      }
+
+      var rows = [];
+
+      for (var _i3 = 0, _Object$entries2 = Object.entries(this.aggregates['deps']); _i3 < _Object$entries2.length; _i3++) {
+        var _Object$entries2$_i = _slicedToArray(_Object$entries2[_i3], 2),
+            key_1 = _Object$entries2$_i[0],
+            row_1 = _Object$entries2$_i[1];
+
+        for (var _i4 = 0, _Object$entries3 = Object.entries(row_1['children']); _i4 < _Object$entries3.length; _i4++) {
+          var _Object$entries3$_i = _slicedToArray(_Object$entries3[_i4], 2),
+              key_2 = _Object$entries3$_i[0],
+              row_2 = _Object$entries3$_i[1];
+
+          var _row3 = {
+            'department': key_1,
+            'sector': key_2,
+            'budget': row_2['budget'],
+            'actuals': row_2['actuals'],
+            'diff': row_2['diff'],
+            'class': 3
+          };
+          rows.push(_row3);
+        }
+
+        var _row2 = {
+          'department': key_1,
+          'sector': 'All',
+          'budget': row_1['budget'],
+          'actuals': row_1['actuals'],
+          'diff': row_1['diff'],
+          'class': 2
+        };
+        rows.push(_row2);
+      }
+
+      var row = {
+        'department': 'Entire Project',
+        'sector': '',
+        'budget': this.aggregates['budget'],
+        'actuals': this.aggregates['actuals'],
+        'diff': this.aggregates['diff'],
+        'class': 1
+      };
+      rows.push(row);
+      this.aggregate_rows = rows;
     },
     fetchProjectInfo: function fetchProjectInfo() {
       var _this2 = this;
@@ -41346,6 +41448,9 @@ var render = function() {
                     )
                   : _vm._e(),
                 _vm._v(" "),
+                _c("h3", [_vm._v("Cost overview")]),
+                _c("br"),
+                _vm._v(" "),
                 _c("div", [
                   _c(
                     "button",
@@ -41445,6 +41550,16 @@ var render = function() {
                                                 "\n                                "
                                             )
                                           ])
+                                        : key == "final"
+                                        ? _c("span", [
+                                            _vm._v(
+                                              "\n                                " +
+                                                _vm._s(
+                                                  _vm.filter_final_options[item]
+                                                ) +
+                                                "\n                                "
+                                            )
+                                          ])
                                         : _c("span", [
                                             _vm._v(
                                               "\n                                    " +
@@ -41497,7 +41612,39 @@ var render = function() {
                         "exit-delete": _vm.exitWithDelete
                       }
                     })
-                  : _vm._e()
+                  : _vm._e(),
+                _vm._v(" "),
+                _c("br"),
+                _vm._v(" "),
+                _c("h3", [_vm._v("Aggregates")]),
+                _vm._v(" "),
+                _c(
+                  "table",
+                  {
+                    staticClass: "table table-striped",
+                    attrs: { id: "aggregates" }
+                  },
+                  [
+                    _vm._m(0),
+                    _vm._v(" "),
+                    _vm._l(_vm.aggregate_rows, function(row) {
+                      return _c(
+                        "tr",
+                        _vm._l(row, function(cell, key) {
+                          return key != "class"
+                            ? _c(
+                                "td",
+                                { class: [row.class < 3 ? "agg" : ""] },
+                                [_vm._v(_vm._s(cell))]
+                              )
+                            : _vm._e()
+                        }),
+                        0
+                      )
+                    })
+                  ],
+                  2
+                )
               ],
               1
             )
@@ -41507,7 +41654,24 @@ var render = function() {
     ]
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", [
+      _c("th", [_vm._v("Department")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Sector")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Budget")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Actual Cost")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Diff")])
+    ])
+  }
+]
 render._withStripped = true
 
 

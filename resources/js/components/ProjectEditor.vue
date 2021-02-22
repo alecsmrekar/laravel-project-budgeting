@@ -15,6 +15,7 @@ export default {
     data: function () {
         return {
             id: -1,
+            aggregate_class: 'agg',
             modal_id: -1,
             filter_final: -1,
             filter_final_options: {
@@ -44,6 +45,8 @@ export default {
                 'diff': 'Diff vs Budget'
             },
             render: [],
+            aggregates: {},
+            aggregate_rows: [],
         }
     },
     methods: {
@@ -109,6 +112,7 @@ export default {
 
                     }
                     this.generateHeaders();
+                    this.calcAggregates();
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -127,6 +131,87 @@ export default {
         },
         finalFilter: function (event) {
             this.filter_final = parseInt(event.target.value);
+            this.calcAggregates();
+        },
+        calcAggregates: function () {
+            let filter = this.filter_final;
+            this.aggregates = {
+                'budget': 0,
+                'actuals': 0,
+                'diff': 0,
+                'deps': {}
+            };
+            for (const [key, row] of Object.entries(this.sortCost(this.costs))) {
+                if (row['final'] === filter || filter === -1) {
+                    let dep = row['department'];
+                    const sector = row['sector'];
+
+                    if (!(dep in this.aggregates['deps'])) {
+                        this.aggregates['deps'][dep] = {
+                            'budget': 0,
+                            'actuals': 0,
+                            'diff': 0,
+                            'children': {
+                                [sector]: {
+                                    'budget': 0,
+                                    'actuals': 0,
+                                    'diff': 0,
+                                }
+                            },
+                        }
+                    } else if (!(sector in this.aggregates['deps'][dep]['children'])) {
+                        this.aggregates['deps'][dep]['children'][sector] = {
+                            'budget': 0,
+                            'actuals': 0,
+                            'diff': 0,
+                        }
+                    }
+                    this.aggregates['budget'] += row['budget'];
+                    this.aggregates['actuals'] += row['actuals'];
+                    this.aggregates['diff'] += row['diff'];
+
+                    this.aggregates['deps'][dep]['budget'] += row['budget'];
+                    this.aggregates['deps'][dep]['actuals'] += row['actuals'];
+                    this.aggregates['deps'][dep]['diff'] += row['diff'];
+
+                    this.aggregates['deps'][dep]['children'][sector]['budget'] += row['budget'];
+                    this.aggregates['deps'][dep]['children'][sector]['actuals'] += row['actuals'];
+                    this.aggregates['deps'][dep]['children'][sector]['diff'] += row['diff'];
+                }
+            }
+            let rows = [];
+            for (const [key_1, row_1] of Object.entries(this.aggregates['deps'])) {
+                for (const [key_2, row_2] of Object.entries(row_1['children'])) {
+                    let row = {
+                        'department': key_1,
+                        'sector': key_2,
+                        'budget': row_2['budget'],
+                        'actuals': row_2['actuals'],
+                        'diff': row_2['diff'],
+                        'class': 3,
+                    }
+                    rows.push(row);
+                }
+                let row = {
+                    'department': key_1,
+                    'sector': 'All',
+                    'budget': row_1['budget'],
+                    'actuals': row_1['actuals'],
+                    'diff': row_1['diff'],
+                    'class': 2,
+                }
+                rows.push(row);
+            }
+            let row = {
+                'department': 'Entire Project',
+                'sector': '',
+                'budget': this.aggregates['budget'],
+                'actuals': this.aggregates['actuals'],
+                'diff': this.aggregates['diff'],
+                'class': 1,
+            }
+            rows.push(row);
+            this.aggregate_rows = rows;
         },
         fetchProjectInfo() {
             if (this.id !== '-1') {
@@ -162,10 +247,13 @@ export default {
                         <div v-if="update_msg" class="alert alert-success" role="alert">
                             {{ update_msg }}
                         </div>
+
+                        <h3>Cost overview</h3><br>
                         <div>
                             <button @click="openModal(-1)" type="button" class="btn btn-primary">Add Cost Item</button>
                         </div>
                         <br>
+
 
                         <span>Filter on final status:</span>
                         <select class="custom-select" @change="finalFilter($event)" id="filter_final"
@@ -183,6 +271,9 @@ export default {
                                     <span v-if="key == 'tax_rate'">
                                     {{ item * 100 }}
                                     </span>
+                                    <span v-else-if="key == 'final'">
+                                    {{ filter_final_options[item] }}
+                                    </span>
                                     <span v-else>
                                         {{ item }}
                                     </span>
@@ -199,6 +290,24 @@ export default {
                                        v-bind:modal_id="modal_id"
                                        v-bind:project_id="id"
                                        v-bind:all_costs="costs"></new-cost-item>
+
+                        <br>
+                        <h3>Aggregates</h3>
+
+                        <table class="table table-striped" id="aggregates">
+                            <tr>
+                                <th>Department</th>
+                                <th>Sector</th>
+                                <th>Budget</th>
+                                <th>Actual Cost</th>
+                                <th>Diff</th>
+                            </tr>
+                            <tr v-for="row in aggregate_rows">
+                                <td v-for="(cell, key) in row" v-if="key != 'class'" v-bind:class="[row.class < 3 ? 'agg': '']">{{cell}}</td>
+                            </tr>
+                        </table>
+
+
                     </div>
 
                 </div>
