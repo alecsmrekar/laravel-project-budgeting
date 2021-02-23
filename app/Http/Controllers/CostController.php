@@ -61,7 +61,7 @@ class CostController {
             if ($manual_date) {
                 $insert = $item;
                 $insert['date'] = $manual_date;
-                $insert['amount'] = $manual;
+                $insert['actuals'] = $manual;
                 array_push($output, $insert);
             }
 
@@ -69,7 +69,7 @@ class CostController {
             foreach ($cost['transactions_data'] as $tr) {
                 $insert = $item;
                 $insert['date'] = $tr['date'];
-                $insert['amount'] = $tr['amount'];
+                $insert['actuals'] = $tr['actuals'];
                 array_push($output, $insert);
             }
         }

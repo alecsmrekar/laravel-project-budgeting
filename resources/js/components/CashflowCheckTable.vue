@@ -61,7 +61,7 @@ export default {
                 'sector': 'Sector',
                 'cost': 'Service',
                 'final': 'Status',
-                'amount': 'Amount',
+                'actuals': 'Amount',
                 'sum': 'Cumulative',
             },
             cashflow: [],
@@ -76,7 +76,7 @@ export default {
             this.sum = 0
             for (const [key, row] of Object.entries(this.cashflow)) {
                 if (row['project_id'] === this.filter_projects || this.filter_projects === -1) {
-                    this.sum += row['amount'];
+                    this.sum += row['actuals'];
                     row['sum'] = this.sum;
                     this.$set(this.cashflow, key, row);
                 }

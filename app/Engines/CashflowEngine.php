@@ -70,7 +70,17 @@ class CashflowEngine {
             $tid = $citem['transaction_id'];
             $cid = $citem['cost_id'];
             $this->indexed_cost_data[$cid]['transactions'] += $this->indexed_transaction_data[$provider][$tid]['amount'];
-            array_push($this->indexed_cost_data[$cid]['transactions_data'], $this->indexed_transaction_data[$provider][$tid]);
+            $trans = $this->indexed_transaction_data[$provider][$tid];
+            $insert = $this->calc_transaction(
+                floatval($trans['amount']),
+                floatval($this->indexed_cost_data[$cid]['budget']),
+                floatval($this->indexed_cost_data[$cid]['tax_rate']),
+                $trans['date']
+            );
+            array_push(
+                $this->indexed_cost_data[$cid]['transactions_data'],
+                $insert
+            );
         }
 
         // Sum it up and calc the diff
@@ -78,17 +88,45 @@ class CashflowEngine {
 
             // transactions will be negative
             $actuals = $item[$this->actuals_field_name] - $item['transactions'];
-            $diff = $item['budget'] - $actuals;
+            $net_actuals = $actuals / (1 + $item['tax_rate']);
+            $net_actuals = round($net_actuals, 2);
+            $tax = round($actuals - $net_actuals, 2);
             $output[$key] = [];
             if ($this->return_all_cost_data) {
                 $output[$key] = $item;
-            }
-            $output[$key]['actuals'] = $actuals;
-            $output[$key]['diff'] = $diff;
 
-            // Invert the manuals because they are entred as a positive number
-            $output[$key][$this->actuals_field_name] = $item[$this->actuals_field_name]*-1;
+                // Invert the manuals because they are entred as a positive number
+                $output[$key][$this->actuals_field_name] *= -1;
+            }
+
+            $calcs = $this->calc_transaction(
+                $actuals,
+                $item['budget'],
+                $item['tax_rate'],
+                $item['manual_actuals_date']
+            );
+
+            $output[$key] = array_merge($output[$key], $calcs);
+
+
+
+            //$output[$key]['actuals_net'] *= -1;
+            //$output[$key]['tax_part'] *= -1;
         }
         return $output;
+    }
+
+    private function calc_transaction($actuals, $budget, $tax_rate, $date) {
+        $actuals_net = round($actuals / (1 + $tax_rate), 2);
+        $tax = round($actuals - $actuals_net,2);
+        $diff = $budget - $actuals;
+        return [
+            'actuals' => $actuals,
+            'actuals_net' => $actuals_net,
+            'tax_part' => $tax,
+            'diff' => $diff,
+            'budget' => $budget,
+            'date' => $date
+        ];
     }
 }

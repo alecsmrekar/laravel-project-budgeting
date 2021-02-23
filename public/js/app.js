@@ -1931,7 +1931,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         'sector': 'Sector',
         'cost': 'Service',
         'final': 'Status',
-        'amount': 'Amount',
+        'actuals': 'Amount',
         'sum': 'Cumulative'
       },
       cashflow: [],
@@ -1951,7 +1951,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
             row = _Object$entries$_i[1];
 
         if (row['project_id'] === this.filter_projects || this.filter_projects === -1) {
-          this.sum += row['amount'];
+          this.sum += row['actuals'];
           row['sum'] = this.sum;
           this.$set(this.cashflow, key, row);
         }
@@ -2881,6 +2881,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         'final': 'Is Final?',
         'comment': 'Comment',
         'actuals': 'Actual Cost',
+        'actuals_net': 'Actual Cost (no tax)',
+        'tax_part': 'Tax Amount',
         'diff': 'Diff vs Budget'
       },
       render: [],
@@ -2929,6 +2931,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       }
 
       this.$set(this.costs, ID_to_update, object);
+      this.calcAggregates();
     },
     exitWithDelete: function exitWithDelete(id) {
       this.isModalVisible = false;
@@ -2936,6 +2939,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.update_msg = 'Deleted cost ID: ' + id;
       var ID_to_del = this.findId(id);
       this.$delete(this.costs, ID_to_del);
+      this.calcAggregates();
     },
     findId: function findId(id) {
       var _iterator = _createForOfIteratorHelper(this.costs.entries()),
@@ -3006,6 +3010,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.aggregates = {
         'budget': 0,
         'actuals': 0,
+        'actuals_net': 0,
+        'tax_part': 0,
         'diff': 0,
         'deps': {}
       };
@@ -3023,10 +3029,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
             this.aggregates['deps'][dep] = {
               'budget': 0,
               'actuals': 0,
+              'actuals_net': 0,
+              'tax_part': 0,
               'diff': 0,
               'children': _defineProperty({}, sector, {
                 'budget': 0,
                 'actuals': 0,
+                'actuals_net': 0,
+                'tax_part': 0,
                 'diff': 0
               })
             };
@@ -3034,18 +3044,26 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
             this.aggregates['deps'][dep]['children'][sector] = {
               'budget': 0,
               'actuals': 0,
+              'actuals_net': 0,
+              'tax_part': 0,
               'diff': 0
             };
           }
 
           this.aggregates['budget'] += _row['budget'];
           this.aggregates['actuals'] += _row['actuals'];
+          this.aggregates['actuals_net'] += _row['actuals_net'];
+          this.aggregates['tax_part'] += _row['tax_part'];
           this.aggregates['diff'] += _row['diff'];
           this.aggregates['deps'][dep]['budget'] += _row['budget'];
           this.aggregates['deps'][dep]['actuals'] += _row['actuals'];
+          this.aggregates['deps'][dep]['actuals_net'] += _row['actuals_net'];
+          this.aggregates['deps'][dep]['tax_part'] += _row['tax_part'];
           this.aggregates['deps'][dep]['diff'] += _row['diff'];
           this.aggregates['deps'][dep]['children'][sector]['budget'] += _row['budget'];
           this.aggregates['deps'][dep]['children'][sector]['actuals'] += _row['actuals'];
+          this.aggregates['deps'][dep]['children'][sector]['actuals_net'] += _row['actuals_net'];
+          this.aggregates['deps'][dep]['children'][sector]['tax_part'] += _row['tax_part'];
           this.aggregates['deps'][dep]['children'][sector]['diff'] += _row['diff'];
         }
       }
@@ -3067,6 +3085,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
             'sector': key_2,
             'budget': row_2['budget'],
             'actuals': row_2['actuals'],
+            'actuals_net': row_2['actuals_net'],
+            'tax_part': row_2['tax_part'],
             'diff': row_2['diff'],
             'class': 3
           };
@@ -3078,6 +3098,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           'sector': 'All',
           'budget': row_1['budget'],
           'actuals': row_1['actuals'],
+          'actuals_net': row_1['actuals_net'],
+          'tax_part': row_1['tax_part'],
           'diff': row_1['diff'],
           'class': 2
         };
@@ -3089,6 +3111,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         'sector': '',
         'budget': this.aggregates['budget'],
         'actuals': this.aggregates['actuals'],
+        'actuals_net': this.aggregates['actuals_net'],
+        'tax_part': this.aggregates['tax_part'],
         'diff': this.aggregates['diff'],
         'class': 1
       };
@@ -41448,9 +41472,6 @@ var render = function() {
                     )
                   : _vm._e(),
                 _vm._v(" "),
-                _c("h3", [_vm._v("Cost overview")]),
-                _c("br"),
-                _vm._v(" "),
                 _c("div", [
                   _c(
                     "button",
@@ -41514,6 +41535,7 @@ var render = function() {
                 ),
                 _c("br"),
                 _c("br"),
+                _c("h4", [_vm._v("Cost Overview")]),
                 _vm._v(" "),
                 _c(
                   "table",
@@ -41616,7 +41638,7 @@ var render = function() {
                 _vm._v(" "),
                 _c("br"),
                 _vm._v(" "),
-                _c("h3", [_vm._v("Aggregates")]),
+                _c("h4", [_vm._v("Aggregates")]),
                 _vm._v(" "),
                 _c(
                   "table",
@@ -41667,6 +41689,10 @@ var staticRenderFns = [
       _c("th", [_vm._v("Budget")]),
       _vm._v(" "),
       _c("th", [_vm._v("Actual Cost")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Actual Cost Net")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Tax Part")]),
       _vm._v(" "),
       _c("th", [_vm._v("Diff")])
     ])

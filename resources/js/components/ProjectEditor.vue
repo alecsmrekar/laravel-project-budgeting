@@ -42,6 +42,8 @@ export default {
                 'final': 'Is Final?',
                 'comment': 'Comment',
                 'actuals': 'Actual Cost',
+                'actuals_net': 'Actual Cost (no tax)',
+                'tax_part': 'Tax Amount',
                 'diff': 'Diff vs Budget'
             },
             render: [],
@@ -88,6 +90,7 @@ export default {
                 ID_to_update = this.findId(id);
             }
             this.$set(this.costs, ID_to_update, object);
+            this.calcAggregates();
         },
         exitWithDelete: function (id) {
             this.isModalVisible = false;
@@ -95,6 +98,7 @@ export default {
             this.update_msg = 'Deleted cost ID: ' + id;
             var ID_to_del = this.findId(id);
             this.$delete(this.costs, ID_to_del);
+            this.calcAggregates();
         },
         findId: function (id) {
             for (const [pos, cost] of this.costs.entries()) {
@@ -138,6 +142,8 @@ export default {
             this.aggregates = {
                 'budget': 0,
                 'actuals': 0,
+                'actuals_net': 0,
+                'tax_part': 0,
                 'diff': 0,
                 'deps': {}
             };
@@ -150,11 +156,15 @@ export default {
                         this.aggregates['deps'][dep] = {
                             'budget': 0,
                             'actuals': 0,
+                            'actuals_net': 0,
+                            'tax_part': 0,
                             'diff': 0,
                             'children': {
                                 [sector]: {
                                     'budget': 0,
                                     'actuals': 0,
+                                    'actuals_net': 0,
+                                    'tax_part': 0,
                                     'diff': 0,
                                 }
                             },
@@ -163,19 +173,27 @@ export default {
                         this.aggregates['deps'][dep]['children'][sector] = {
                             'budget': 0,
                             'actuals': 0,
+                            'actuals_net': 0,
+                            'tax_part': 0,
                             'diff': 0,
                         }
                     }
                     this.aggregates['budget'] += row['budget'];
                     this.aggregates['actuals'] += row['actuals'];
+                    this.aggregates['actuals_net'] += row['actuals_net'];
+                    this.aggregates['tax_part'] += row['tax_part'];
                     this.aggregates['diff'] += row['diff'];
 
                     this.aggregates['deps'][dep]['budget'] += row['budget'];
                     this.aggregates['deps'][dep]['actuals'] += row['actuals'];
+                    this.aggregates['deps'][dep]['actuals_net'] += row['actuals_net'];
+                    this.aggregates['deps'][dep]['tax_part'] += row['tax_part'];
                     this.aggregates['deps'][dep]['diff'] += row['diff'];
 
                     this.aggregates['deps'][dep]['children'][sector]['budget'] += row['budget'];
                     this.aggregates['deps'][dep]['children'][sector]['actuals'] += row['actuals'];
+                    this.aggregates['deps'][dep]['children'][sector]['actuals_net'] += row['actuals_net'];
+                    this.aggregates['deps'][dep]['children'][sector]['tax_part'] += row['tax_part'];
                     this.aggregates['deps'][dep]['children'][sector]['diff'] += row['diff'];
                 }
             }
@@ -187,6 +205,8 @@ export default {
                         'sector': key_2,
                         'budget': row_2['budget'],
                         'actuals': row_2['actuals'],
+                        'actuals_net': row_2['actuals_net'],
+                        'tax_part': row_2['tax_part'],
                         'diff': row_2['diff'],
                         'class': 3,
                     }
@@ -197,6 +217,8 @@ export default {
                     'sector': 'All',
                     'budget': row_1['budget'],
                     'actuals': row_1['actuals'],
+                    'actuals_net': row_1['actuals_net'],
+                    'tax_part': row_1['tax_part'],
                     'diff': row_1['diff'],
                     'class': 2,
                 }
@@ -207,6 +229,8 @@ export default {
                 'sector': '',
                 'budget': this.aggregates['budget'],
                 'actuals': this.aggregates['actuals'],
+                'actuals_net': this.aggregates['actuals_net'],
+                'tax_part': this.aggregates['tax_part'],
                 'diff': this.aggregates['diff'],
                 'class': 1,
             }
@@ -248,7 +272,6 @@ export default {
                             {{ update_msg }}
                         </div>
 
-                        <h3>Cost overview</h3><br>
                         <div>
                             <button @click="openModal(-1)" type="button" class="btn btn-primary">Add Cost Item</button>
                         </div>
@@ -256,10 +279,11 @@ export default {
 
 
                         <span>Filter on final status:</span>
+
                         <select class="custom-select" @change="finalFilter($event)" id="filter_final"
                                 v-model="filter_final">
                             <option v-for="(label, opt) in filter_final_options" v-bind:value="opt">{{ label }}</option>
-                        </select><br><br>
+                        </select><br><br><h4>Cost Overview</h4>
 
                         <table class="table table-striped">
                             <tr>
@@ -292,7 +316,7 @@ export default {
                                        v-bind:all_costs="costs"></new-cost-item>
 
                         <br>
-                        <h3>Aggregates</h3>
+                        <h4>Aggregates</h4>
 
                         <table class="table table-striped" id="aggregates">
                             <tr>
@@ -300,6 +324,8 @@ export default {
                                 <th>Sector</th>
                                 <th>Budget</th>
                                 <th>Actual Cost</th>
+                                <th>Actual Cost Net</th>
+                                <th>Tax Part</th>
                                 <th>Diff</th>
                             </tr>
                             <tr v-for="row in aggregate_rows">
