@@ -29,8 +29,9 @@
                             </tr>
                             <tr style="font-weight: bold">
                                 <td>Total Cash Change:</td>
-                                <td v-for="i in Object.keys(headers).length-2"></td>
+                                <td v-for="i in Object.keys(headers).length-3"></td>
                                 <td>{{ sum }}</td>
+                                <td>{{ sum_tax }}</td>
                             </tr>
                         </table>
                     </div>
@@ -61,11 +62,14 @@ export default {
                 'sector': 'Sector',
                 'cost': 'Service',
                 'final': 'Status',
-                'actuals': 'Amount',
-                'sum': 'Cumulative',
+                'actuals': 'Cashflow',
+                'tax_part': 'Tax Part',
+                'sum': 'Cumulative Cashflow',
+                'sum_tax': 'Cumulative Taxes To Be Received',
             },
             cashflow: [],
             sum: 0,
+            sum_tax: 0
         }
     },
     mounted() {
@@ -74,10 +78,13 @@ export default {
     methods: {
         calcSum: function () {
             this.sum = 0
+            this.sum_tax = 0
             for (const [key, row] of Object.entries(this.cashflow)) {
                 if (row['project_id'] === this.filter_projects || this.filter_projects === -1) {
                     this.sum += row['actuals'];
+                    this.sum_tax -= row['tax_part'];
                     row['sum'] = this.sum;
+                    row['sum_tax'] = this.sum_tax;
                     this.$set(this.cashflow, key, row);
                 }
             }

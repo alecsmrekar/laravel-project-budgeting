@@ -1912,6 +1912,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -1931,11 +1932,14 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         'sector': 'Sector',
         'cost': 'Service',
         'final': 'Status',
-        'actuals': 'Amount',
-        'sum': 'Cumulative'
+        'actuals': 'Cashflow',
+        'tax_part': 'Tax Part',
+        'sum': 'Cumulative Cashflow',
+        'sum_tax': 'Cumulative Taxes To Be Received'
       },
       cashflow: [],
-      sum: 0
+      sum: 0,
+      sum_tax: 0
     };
   },
   mounted: function mounted() {
@@ -1944,6 +1948,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
   methods: {
     calcSum: function calcSum() {
       this.sum = 0;
+      this.sum_tax = 0;
 
       for (var _i = 0, _Object$entries = Object.entries(this.cashflow); _i < _Object$entries.length; _i++) {
         var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
@@ -1952,7 +1957,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
         if (row['project_id'] === this.filter_projects || this.filter_projects === -1) {
           this.sum += row['actuals'];
+          this.sum_tax -= row['tax_part'];
           row['sum'] = this.sum;
+          row['sum_tax'] = this.sum_tax;
           this.$set(this.cashflow, key, row);
         }
       }
@@ -40475,11 +40482,13 @@ var render = function() {
                     [
                       _c("td", [_vm._v("Total Cash Change:")]),
                       _vm._v(" "),
-                      _vm._l(Object.keys(_vm.headers).length - 2, function(i) {
+                      _vm._l(Object.keys(_vm.headers).length - 3, function(i) {
                         return _c("td")
                       }),
                       _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(_vm.sum))])
+                      _c("td", [_vm._v(_vm._s(_vm.sum))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(_vm.sum_tax))])
                     ],
                     2
                   )
@@ -41582,6 +41591,16 @@ var render = function() {
                                                 "\n                                "
                                             )
                                           ])
+                                        : key == "actuals" ||
+                                          key == "actuals_net" ||
+                                          key == "tax_part"
+                                        ? _c("span", [
+                                            _vm._v(
+                                              "\n                                " +
+                                                _vm._s(item * -1) +
+                                                "\n                                "
+                                            )
+                                          ])
                                         : _c("span", [
                                             _vm._v(
                                               "\n                                    " +
@@ -41657,7 +41676,25 @@ var render = function() {
                             ? _c(
                                 "td",
                                 { class: [row.class < 3 ? "agg" : ""] },
-                                [_vm._v(_vm._s(cell))]
+                                [
+                                  key == "actuals" ||
+                                  key == "actuals_net" ||
+                                  key == "tax_part"
+                                    ? _c("span", [
+                                        _vm._v(
+                                          "\n                                " +
+                                            _vm._s(cell * -1) +
+                                            "\n                                "
+                                        )
+                                      ])
+                                    : _c("span", [
+                                        _vm._v(
+                                          "\n                                    " +
+                                            _vm._s(cell) +
+                                            "\n                                "
+                                        )
+                                      ])
+                                ]
                               )
                             : _vm._e()
                         }),
@@ -41694,7 +41731,7 @@ var staticRenderFns = [
       _vm._v(" "),
       _c("th", [_vm._v("Tax Part")]),
       _vm._v(" "),
-      _c("th", [_vm._v("Diff")])
+      _c("th", [_vm._v("Diff vs Budget")])
     ])
   }
 ]

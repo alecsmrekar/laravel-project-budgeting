@@ -298,6 +298,9 @@ export default {
                                     <span v-else-if="key == 'final'">
                                     {{ filter_final_options[item] }}
                                     </span>
+                                    <span v-else-if="key == 'actuals' || key == 'actuals_net' || key == 'tax_part'" >
+                                    {{ item *-1 }}
+                                    </span>
                                     <span v-else>
                                         {{ item }}
                                     </span>
@@ -326,10 +329,18 @@ export default {
                                 <th>Actual Cost</th>
                                 <th>Actual Cost Net</th>
                                 <th>Tax Part</th>
-                                <th>Diff</th>
+                                <th>Diff vs Budget</th>
                             </tr>
                             <tr v-for="row in aggregate_rows">
-                                <td v-for="(cell, key) in row" v-if="key != 'class'" v-bind:class="[row.class < 3 ? 'agg': '']">{{cell}}</td>
+                                <td v-for="(cell, key) in row" v-if="key != 'class'" v-bind:class="[row.class < 3 ? 'agg': '']">
+                                    <span v-if="key == 'actuals' || key == 'actuals_net' || key == 'tax_part'" >
+                                    {{ cell *-1 }}
+                                    </span>
+                                    <span v-else>
+                                        {{cell}}
+                                    </span>
+                                </td>
+
                             </tr>
                         </table>
 
