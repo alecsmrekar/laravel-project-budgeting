@@ -10991,7 +10991,8 @@ a.text-dark:focus {
   text-align: left;
 }
 
-#transactions_page .modal-body label + select {
+#transactions_page .modal-body label + select,
+#transactions_page .modal-body label + input {
   margin: 0 6% 0 4%;
 }
 

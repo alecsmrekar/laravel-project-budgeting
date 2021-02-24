@@ -16,6 +16,7 @@ export default {
             project: -1,
             link_id: -1,
             department: '',
+            link_tag: '',
             cost_id: -1,
             all_projects: [],
             all_departments: [],
@@ -37,6 +38,7 @@ export default {
                 this.link_id = data[0]['id'];
                 this.project = data[0]['project_id'];
                 this.cost_id = data[0]['cost_id'];
+                this.link_tag = data[0]['link_tag'];
 
                 await this.loadTree(this.project);
                 this.department = data[0]['department'];
@@ -79,6 +81,7 @@ export default {
                     cost_id: this.cost_id,
                     transaction_id: this.modal_id,
                     provider: this.modal_provider,
+                    link_tag: this.link_tag,
                 })
                     .catch(function (error) {
                         console.log(error);
@@ -114,36 +117,6 @@ export default {
                     console.log(error);
                 });
             return data;
-        },
-        submitEdit: function () {
-            var endpoint = '/api/projects/update/' + this.modal_id;
-            let currentObj = this;
-            axios.post(endpoint, {
-                name: this.cname,
-                client: this.cclient,
-                active: this.active
-            })
-                .then(function (response) {
-                    currentObj.output = response.data;
-                })
-                .catch(function (error) {
-                    currentObj.output = error;
-                });
-        },
-        submitNew: function () {
-            var endpoint = '/api/projects/create';
-            let currentObj = this;
-            axios.post(endpoint, {
-                name: this.cname,
-                client: this.cclient,
-                active: this.active
-            })
-                .then(function (response) {
-                    currentObj.output = response.data;
-                })
-                .catch(function (error) {
-                    currentObj.output = error;
-                });
         },
         loadTree: async function (project_id) {
             for (var i = 0; i < this.all_departments.length; i++) {
@@ -220,6 +193,9 @@ export default {
                         <select id="cost_id" name="cost_id" v-model="cost_id">
                             <option v-for="item in filtered_costs" v-bind:value="item.id">{{ item.name }}</option>
                         </select>
+                        <br>
+                        <label>Tag:</label>
+                        <input type="text" id="link_tag" name="link_tag" v-model="link_tag"><br>
 
                         <br>
                     </div>

@@ -62,6 +62,7 @@ export default {
                 'sector': 'Sector',
                 'cost': 'Service',
                 'final': 'Status',
+                'tag': 'Tag',
                 'actuals': 'Cashflow',
                 'tax_part': 'Tax Part',
                 'sum': 'Cumulative Cashflow',

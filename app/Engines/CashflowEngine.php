@@ -7,6 +7,7 @@ use App\Http\Controllers\ProviderController;
 use App\Models;
 use App\Models\Cost;
 use App\Models\Project;
+use function PHPUnit\Framework\isNull;
 
 
 class CashflowEngine {
@@ -40,10 +41,12 @@ class CashflowEngine {
         $this->get_cost_actuals_date();
     }
 
+    // Turns on the setting that indicates we want all cost data to be returned, not only actuals
     public function receiveAllCostData() {
         $this->return_all_cost_data = TRUE;
     }
 
+    // Makes a dictionary of costs with cost ids as keys
     private function generate_indexed_cost_data() {
         foreach ($this->cost_array as $i) {
             $this->indexed_cost_data[$i['id']] = $i;
@@ -52,6 +55,9 @@ class CashflowEngine {
         }
     }
 
+    /* Makes a dictionary of transactions with
+    ** providers as primary keys and transaction numbers as secondary keys
+    */
     private function generate_indexed_transaction_data() {
         foreach ($this->transactions as $item) {
             $provider = $item['provider'];
@@ -67,6 +73,7 @@ class CashflowEngine {
         $this->generate_transaction_calcs();
     }
 
+    // Calculates actuals fields for every linked trasanction
     private function generate_transaction_calcs() {
         // Add the transaction amounts
         foreach ($this->links as $ckey => $citem) {
@@ -79,7 +86,8 @@ class CashflowEngine {
                 floatval($trans['amount']),
                 floatval($this->indexed_cost_data[$cid]['budget']),
                 floatval($this->indexed_cost_data[$cid]['tax_rate']),
-                $trans['date']
+                $trans['date'],
+                $citem['link_tag']
             );
             array_push(
                 $this->indexed_cost_data[$cid]['transactions_data'],
@@ -88,31 +96,35 @@ class CashflowEngine {
         }
     }
 
+    // Returns the fields relevalnt to manual cost entry
     private function get_cost_manuals($cost_array) {
         if ($cost_array['manual_actuals_date']) {
             return [
-                'actuals' => $cost_array[$this->actuals_field_name]*-1,
+                'actuals' => $cost_array[$this->actuals_field_name] * -1,
                 'date' => $cost_array['manual_actuals_date'],
             ];
         }
         return [];
     }
 
-    // Priority to manuals date
+    // Generate the actuals date field for one cost item
     private function get_cost_actuals_date() {
         foreach ($this->indexed_cost_data as $key => $item) {
             if ($item['manual_actuals_date']) {
                 $this->indexed_cost_data[$key]['date'] = $item['manual_actuals_date'];
             }
-            else if (sizeof($item['transactions_data'])) {
-                $this->indexed_cost_data[$key]['date'] = $item['transactions_data'][0]['date'];
-            }
             else {
-                $this->indexed_cost_data[$key]['date'] = '';
+                if (sizeof($item['transactions_data'])) {
+                    $this->indexed_cost_data[$key]['date'] = $item['transactions_data'][0]['date'];
+                }
+                else {
+                    $this->indexed_cost_data[$key]['date'] = '';
+                }
             }
         }
     }
 
+    // Main function
     public function get_actuals() {
         $output = [];
 
@@ -132,7 +144,8 @@ class CashflowEngine {
                 $actuals,
                 $item['budget'],
                 $item['tax_rate'],
-                $item['date']
+                $item['date'],
+                (!$item['manual_actuals_tag'] ? '' : $item['manual_actuals_tag'])
             );
 
             $output[$key] = array_merge($output[$key], $calcs);
@@ -140,11 +153,11 @@ class CashflowEngine {
         return $output;
     }
 
+    // Main function
     public function get_actuals_by_event() {
         $output = [];
 
         foreach ($this->indexed_cost_data as $key => $item) {
-
             $base_item = [
                 'cost_id' => $item['id'],
                 'project' => $this->project_names[$item['project_id']],
@@ -166,31 +179,28 @@ class CashflowEngine {
             if (sizeof($manuals)) {
                 $insert = $base_item;
                 $calc = $this->calc_transaction($manuals['actuals'],
-                $item['budget'],
+                    $item['budget'],
                     $item['tax_rate'],
-                    $manuals['date']);
+                    $manuals['date'],
+                    (!$item['manual_actuals_tag'] ? '' : $item['manual_actuals_tag'])
+                );
                 $insert = array_merge($insert, $calc);
                 array_push($output, $insert);
             }
 
             // Loop transactions
             foreach ($item['transactions_data'] as $tr) {
-                $calc = $this->calc_transaction(
-                    $tr['actuals'],
-                    $item['budget'],
-                    $item['tax_rate'],
-                    $tr['date']);
-                $insert = array_merge($base_item, $calc);
+                $insert = array_merge($base_item, $tr);
                 array_push($output, $insert);
             }
-            $a=2;
         }
         return $output;
     }
 
-    private function calc_transaction($actuals, $budget, $tax_rate, $date) {
+    // Calculates the actuals for one cashflow item
+    private function calc_transaction($actuals, $budget, $tax_rate, $date, $tag='') {
         $actuals_net = round($actuals / (1 + $tax_rate), 2);
-        $tax = round($actuals - $actuals_net,2);
+        $tax = round($actuals - $actuals_net, 2);
         $diff = $actuals + $budget;
         return [
             'actuals' => $actuals,
@@ -198,7 +208,8 @@ class CashflowEngine {
             'tax_part' => $tax,
             'diff' => $diff,
             'budget' => $budget,
-            'date' => $date
+            'date' => $date,
+            'tag' => $tag
         ];
     }
 }

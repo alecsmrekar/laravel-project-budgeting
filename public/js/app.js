@@ -1932,6 +1932,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         'sector': 'Sector',
         'cost': 'Service',
         'final': 'Status',
+        'tag': 'Tag',
         'actuals': 'Cashflow',
         'tax_part': 'Tax Part',
         'sum': 'Cumulative Cashflow',
@@ -2260,6 +2261,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       project: -1,
       link_id: -1,
       department: '',
+      link_tag: '',
       cost_id: -1,
       all_projects: [],
       all_departments: [],
@@ -2289,22 +2291,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 data = _context.sent;
 
                 if (!(data.length > 0)) {
-                  _context.next = 16;
+                  _context.next = 17;
                   break;
                 }
 
                 this.link_id = data[0]['id'];
                 this.project = data[0]['project_id'];
                 this.cost_id = data[0]['cost_id'];
-                _context.next = 10;
+                this.link_tag = data[0]['link_tag'];
+                _context.next = 11;
                 return this.loadTree(this.project);
 
-              case 10:
+              case 11:
                 this.department = data[0]['department'];
-                _context.next = 13;
+                _context.next = 14;
                 return this.tree[this.department];
 
-              case 13:
+              case 14:
                 dep_costs = _context.sent;
                 cnt = 0;
 
@@ -2316,7 +2319,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   this.filtered_costs.push(item);
                 }
 
-              case 16:
+              case 17:
               case "end":
                 return _context.stop();
             }
@@ -2366,7 +2369,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 return axios.post(endpoint, {
                   cost_id: this.cost_id,
                   transaction_id: this.modal_id,
-                  provider: this.modal_provider
+                  provider: this.modal_provider,
+                  link_tag: this.link_tag
                 })["catch"](function (error) {
                   console.log(error);
                 });
@@ -2458,32 +2462,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       return loadApiArrayAsync;
     }(),
-    submitEdit: function submitEdit() {
-      var endpoint = '/api/projects/update/' + this.modal_id;
-      var currentObj = this;
-      axios.post(endpoint, {
-        name: this.cname,
-        client: this.cclient,
-        active: this.active
-      }).then(function (response) {
-        currentObj.output = response.data;
-      })["catch"](function (error) {
-        currentObj.output = error;
-      });
-    },
-    submitNew: function submitNew() {
-      var endpoint = '/api/projects/create';
-      var currentObj = this;
-      axios.post(endpoint, {
-        name: this.cname,
-        client: this.cclient,
-        active: this.active
-      }).then(function (response) {
-        currentObj.output = response.data;
-      })["catch"](function (error) {
-        currentObj.output = error;
-      });
-    },
     loadTree: function () {
       var _loadTree = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4(project_id) {
         var _this = this;
@@ -41105,6 +41083,32 @@ var render = function() {
                 }),
                 0
               ),
+              _vm._v(" "),
+              _c("br"),
+              _vm._v(" "),
+              _c("label", [_vm._v("Tag:")]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.link_tag,
+                    expression: "link_tag"
+                  }
+                ],
+                attrs: { type: "text", id: "link_tag", name: "link_tag" },
+                domProps: { value: _vm.link_tag },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.link_tag = $event.target.value
+                  }
+                }
+              }),
+              _c("br"),
               _vm._v(" "),
               _c("br")
             ]),

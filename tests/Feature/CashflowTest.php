@@ -32,6 +32,7 @@ class CashflowTest extends TestCase {
             'manual_actuals' => 99,
             'tax_rate' => 0,
             'manual_actuals_date' => $this->faker->date(),
+            'manual_actuals_tag' => 'CF',
         ]);
 
         $response = $this->actingAs($this->super_user)
@@ -44,6 +45,7 @@ class CashflowTest extends TestCase {
         $this->assertEquals($cost['manual_actuals_date'], $response_data[0]['date']);
         $this->assertEquals($net, $response_data[0]['actuals_net']);
         $this->assertEquals($tax, $response_data[0]['tax_part']);
+        $this->assertEquals('CF', $response_data[0]['tag']);
     }
 
     public function test_if_api_call_returns_transaction_actuals() {
@@ -56,7 +58,8 @@ class CashflowTest extends TestCase {
         $link = CostLink::factory()->create([
             'transaction_id' => 100,
             'cost_id' => 1,
-            'provider' => 'Revolut'
+            'provider' => 'Revolut',
+            'link_tag' => 'alfa'
         ]);
 
         $response = $this->actingAs($this->super_user)
@@ -69,6 +72,7 @@ class CashflowTest extends TestCase {
         $this->assertEquals($tax, $response_data[0]['tax_part']);
         $this->assertEquals($net, $response_data[0]['actuals_net']);
         $this->assertEquals($transaction['time'], $response_data[0]['date']);
+        $this->assertEquals('alfa', $response_data[0]['tag']);
     }
 
     public function test_if_api_call_returns_entire_array() {
@@ -93,7 +97,8 @@ class CashflowTest extends TestCase {
             'cost_id',
             'final',
             'date',
-            'actuals'
+            'actuals',
+            'tag'
         ];
         foreach ($keys as $key) {
             $this->assertArrayHasKey($key, $response_data[0]);

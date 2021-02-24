@@ -6,7 +6,6 @@ namespace App\Http\Controllers;
 use App\Engines;
 use App\Models\Cost;
 use App\Models\CostLink;
-use App\Models\Project;
 
 
 class CostController {
@@ -21,6 +20,7 @@ class CostController {
         return [];
     }
 
+    // Returns a list of costs with their actual cashflows calculated
     public static function get_costs($project_id, $add_actuals = TRUE, $cid=false) {
         $data = Cost::get_cost_array($project_id, $cid);
 
@@ -38,6 +38,7 @@ class CostController {
         return $data;
     }
 
+    // Generate the input for the cashflow page
     public static function get_cashflow_page(){
         $engine = new Engines\CashflowEngine();
         $output = $engine->get_actuals_by_event();
@@ -71,6 +72,7 @@ class CostController {
         return $output;
     }
 
+    // Returns an array of costs which have transaction links
     public static function which_costs_are_linked($pid) {
         $output = [];
         $links = CostLink::link_cost_to_transactions($pid);

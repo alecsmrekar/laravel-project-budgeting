@@ -14,8 +14,8 @@ class AddFieldsToCostsTable extends Migration
     public function up()
     {
         Schema::table('costs', function (Blueprint $table) {
-            $table->float('manual_actuals')->default(0)->nullable();;
-            $table->string('manual_actuals_tag')->default('')->nullable();;
+            $table->float('manual_actuals')->default(0)->nullable();
+            $table->string('manual_actuals_tag')->default('')->nullable();
         });
     }
 

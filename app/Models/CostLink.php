@@ -85,6 +85,7 @@ class CostLink extends Model {
         $link->transaction_id = $data['transaction_id'];
         $link->provider = $data['provider'];
         $link->amount = $cost['budget'];
+        $link->link_tag = $data['link_tag'];
         $link->save();
         return self::obj_to_array($link);
     }
