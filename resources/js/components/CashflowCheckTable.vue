@@ -6,14 +6,28 @@
                     <div class="card-header">Cashflow Check</div>
                     <div class="card-body">
 
-                        <div id="project_filter">
-                        <span>Filter projects:</span>
-                        <select class="custom-select" @change="projectFilter($event)" id="filter_projects" v-model="filter_projects">
-                            <option v-for="(label, opt) in filter_projects_options" v-bind:value="opt">{{
-                                    label
-                                }}
-                            </option>
-                        </select></div><br><br>
+                        <div id="project_filter" class="filter">
+                            <span>Filter projects:</span>
+                            <select class="custom-select" @change="projectFilter($event)" id="filter_projects"
+                                    v-model="filter_projects">
+                                <option v-for="(label, opt) in filter_projects_options" v-bind:value="opt">{{ label }}
+                                </option>
+                            </select></div>
+                        <div id="tags_filter" class="filter">
+                            <span>Filter tags:</span>
+                            <select class="custom-select" @change="tagFilter($event)" id="filter_tags"
+                                    v-model="filter_tags">
+                                <option v-for="(label, opt) in filter_tags_options" v-bind:value="opt">{{ label }}
+                                </option>
+                            </select></div>
+                        <div id="status_filter" class="filter">
+                            <span>Filter status:</span>
+                            <select class="custom-select" @change="statusFilter($event)" id="filter_status"
+                                    v-model="filter_status">
+                                <option v-for="(label, opt) in filter_status_options" v-bind:value="opt">{{ label }}
+                                </option>
+                            </select></div>
+                        <br><br>
 
                         <table class="table table-striped">
 
@@ -21,7 +35,7 @@
                                 <th v-for="h in headers">{{ h }}</th>
                             </tr>
 
-                            <tr v-for="cf in cashflow" v-if="filter_projects === -1 || cf.project_id===filter_projects">
+                            <tr v-for="cf in cashflow" v-if="checkFilter(cf.project_id, cf.tag, cf.final)">
                                 <td v-for="(item, key) in cf" v-if="key in headers">
                                     <span v-if="key != 'final'">{{ item }}</span>
                                     <span v-else>{{ final_status[item] }}</span>
@@ -52,7 +66,17 @@ export default {
             },
             filter_projects: -1,
             filter_projects_options: {
-                '-1': 'All'
+                '-1': ' - All - '
+            },
+            filter_tags: '',
+            filter_tags_options: {
+                '': ' - All - ',
+            },
+            filter_status: -1,
+            filter_status_options: {
+                '-1': ' - All - ',
+                '0': 'Open',
+                '1': 'Final'
             },
             headers: {
                 'date': 'Date',
@@ -77,11 +101,23 @@ export default {
         this.loadCashflow();
     },
     methods: {
+        checkFilter: function (project_id, tag, status) {
+            if (this.filter_projects !== -1 && project_id !== this.filter_projects) {
+                return false
+            }
+            if (this.filter_status !== -1 && status !== this.filter_status) {
+                return false
+            }
+            if (this.filter_tags !== '' && tag !== this.filter_tags) {
+                return false
+            }
+            return true
+        },
         calcSum: function () {
             this.sum = 0
             this.sum_tax = 0
             for (const [key, row] of Object.entries(this.cashflow)) {
-                if (row['project_id'] === this.filter_projects || this.filter_projects === -1) {
+                if (this.checkFilter(row['project_id'], row['tag'], row['final'])) {
                     this.sum += row['actuals'];
                     this.sum_tax -= row['tax_part'];
                     row['sum'] = this.sum;
@@ -92,6 +128,14 @@ export default {
         },
         projectFilter: function (event) {
             this.filter_projects = parseInt(event.target.value);
+            this.calcSum();
+        },
+        statusFilter: function (event) {
+            this.filter_status = parseInt(event.target.value);
+            this.calcSum();
+        },
+        tagFilter: function (event) {
+            this.filter_tags = event.target.value;
             this.calcSum();
         },
         loadCashflow: function () {
@@ -107,6 +151,9 @@ export default {
                         }
                         if (item['project_id'] in this.filter_projects_options === false) {
                             this.filter_projects_options[item['project_id']] = item['project'];
+                        }
+                        if (item['tag'] in this.filter_tags_options === false) {
+                            this.filter_tags_options[item['tag']] = item['tag'];
                         }
                         this.cashflow.push(insert);
                     }

@@ -30,12 +30,26 @@
     }
 }
 
-#cashflow_page #project_filter select {
-    max-width: fit-content;
-}
+#cashflow_page {
 
-#cashflow_page #project_filter * {
-    margin: 5px;
+    select {
+        max-width: fit-content;
+        min-width: 200px;
+    }
+
+    .filter {
+        span, select {
+            display: inline-block;
+        }
+        span {
+            width: 20%;
+            text-align: left;
+        }
+        span + select {
+            margin: 0 6% 0 4%;
+        }
+        margin-bottom: 5px;
+    }
 }
 
 #transactions_page .modal-body {
@@ -65,16 +79,20 @@
     label, input {
         display: inline-block;
     }
+
     label {
         width: 30%;
         text-align: left;
     }
+
     label + input {
         margin: 0 6% 0 4%;
     }
+
     input {
         width: 40%;
     }
+
     #active {
         width: auto;
     }
@@ -84,13 +102,16 @@
     label, input {
         display: inline-block;
     }
+
     label {
         width: 30%;
         text-align: left;
     }
+
     label + input {
         margin: 0 6% 0 4%;
     }
+
     input {
         width: 50%;
     }
@@ -130,8 +151,9 @@
 
 #manage_users_page {
     select {
-    max-width: fit-content;
+        max-width: fit-content;
     }
+
     .table {
         max-width: 600px;
     }

@@ -1913,6 +1913,20 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -1922,7 +1936,17 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       },
       filter_projects: -1,
       filter_projects_options: {
-        '-1': 'All'
+        '-1': ' - All - '
+      },
+      filter_tags: '',
+      filter_tags_options: {
+        '': ' - All - '
+      },
+      filter_status: -1,
+      filter_status_options: {
+        '-1': ' - All - ',
+        '0': 'Open',
+        '1': 'Final'
       },
       headers: {
         'date': 'Date',
@@ -1947,6 +1971,21 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     this.loadCashflow();
   },
   methods: {
+    checkFilter: function checkFilter(project_id, tag, status) {
+      if (this.filter_projects !== -1 && project_id !== this.filter_projects) {
+        return false;
+      }
+
+      if (this.filter_status !== -1 && status !== this.filter_status) {
+        return false;
+      }
+
+      if (this.filter_tags !== '' && tag !== this.filter_tags) {
+        return false;
+      }
+
+      return true;
+    },
     calcSum: function calcSum() {
       this.sum = 0;
       this.sum_tax = 0;
@@ -1956,7 +1995,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
             key = _Object$entries$_i[0],
             row = _Object$entries$_i[1];
 
-        if (row['project_id'] === this.filter_projects || this.filter_projects === -1) {
+        if (this.checkFilter(row['project_id'], row['tag'], row['final'])) {
           this.sum += row['actuals'];
           this.sum_tax -= row['tax_part'];
           row['sum'] = this.sum;
@@ -1967,6 +2006,14 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     },
     projectFilter: function projectFilter(event) {
       this.filter_projects = parseInt(event.target.value);
+      this.calcSum();
+    },
+    statusFilter: function statusFilter(event) {
+      this.filter_status = parseInt(event.target.value);
+      this.calcSum();
+    },
+    tagFilter: function tagFilter(event) {
+      this.filter_tags = event.target.value;
       this.calcSum();
     },
     loadCashflow: function loadCashflow() {
@@ -1990,6 +2037,10 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
             if (item['project_id'] in _this.filter_projects_options === false) {
               _this.filter_projects_options[item['project_id']] = item['project'];
+            }
+
+            if (item['tag'] in _this.filter_tags_options === false) {
+              _this.filter_tags_options[item['tag']] = item['tag'];
             }
 
             _this.cashflow.push(insert);
@@ -40373,51 +40424,156 @@ var render = function() {
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "card-body" }, [
-              _c("div", { attrs: { id: "project_filter" } }, [
-                _c("span", [_vm._v("Filter projects:")]),
-                _vm._v(" "),
-                _c(
-                  "select",
-                  {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.filter_projects,
-                        expression: "filter_projects"
-                      }
-                    ],
-                    staticClass: "custom-select",
-                    attrs: { id: "filter_projects" },
-                    on: {
-                      change: [
-                        function($event) {
-                          var $$selectedVal = Array.prototype.filter
-                            .call($event.target.options, function(o) {
-                              return o.selected
-                            })
-                            .map(function(o) {
-                              var val = "_value" in o ? o._value : o.value
-                              return val
-                            })
-                          _vm.filter_projects = $event.target.multiple
-                            ? $$selectedVal
-                            : $$selectedVal[0]
-                        },
-                        function($event) {
-                          return _vm.projectFilter($event)
+              _c(
+                "div",
+                { staticClass: "filter", attrs: { id: "project_filter" } },
+                [
+                  _c("span", [_vm._v("Filter projects:")]),
+                  _vm._v(" "),
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.filter_projects,
+                          expression: "filter_projects"
                         }
-                      ]
-                    }
-                  },
-                  _vm._l(_vm.filter_projects_options, function(label, opt) {
-                    return _c("option", { domProps: { value: opt } }, [
-                      _vm._v(_vm._s(label) + "\n                        ")
-                    ])
-                  }),
-                  0
-                )
-              ]),
+                      ],
+                      staticClass: "custom-select",
+                      attrs: { id: "filter_projects" },
+                      on: {
+                        change: [
+                          function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.filter_projects = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          },
+                          function($event) {
+                            return _vm.projectFilter($event)
+                          }
+                        ]
+                      }
+                    },
+                    _vm._l(_vm.filter_projects_options, function(label, opt) {
+                      return _c("option", { domProps: { value: opt } }, [
+                        _vm._v(_vm._s(label) + "\n                            ")
+                      ])
+                    }),
+                    0
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "filter", attrs: { id: "tags_filter" } },
+                [
+                  _c("span", [_vm._v("Filter tags:")]),
+                  _vm._v(" "),
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.filter_tags,
+                          expression: "filter_tags"
+                        }
+                      ],
+                      staticClass: "custom-select",
+                      attrs: { id: "filter_tags" },
+                      on: {
+                        change: [
+                          function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.filter_tags = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          },
+                          function($event) {
+                            return _vm.tagFilter($event)
+                          }
+                        ]
+                      }
+                    },
+                    _vm._l(_vm.filter_tags_options, function(label, opt) {
+                      return _c("option", { domProps: { value: opt } }, [
+                        _vm._v(_vm._s(label) + "\n                            ")
+                      ])
+                    }),
+                    0
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "filter", attrs: { id: "status_filter" } },
+                [
+                  _c("span", [_vm._v("Filter status:")]),
+                  _vm._v(" "),
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.filter_status,
+                          expression: "filter_status"
+                        }
+                      ],
+                      staticClass: "custom-select",
+                      attrs: { id: "filter_status" },
+                      on: {
+                        change: [
+                          function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.filter_status = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          },
+                          function($event) {
+                            return _vm.statusFilter($event)
+                          }
+                        ]
+                      }
+                    },
+                    _vm._l(_vm.filter_status_options, function(label, opt) {
+                      return _c("option", { domProps: { value: opt } }, [
+                        _vm._v(_vm._s(label) + "\n                            ")
+                      ])
+                    }),
+                    0
+                  )
+                ]
+              ),
+              _vm._v(" "),
               _c("br"),
               _c("br"),
               _vm._v(" "),
@@ -40434,8 +40590,7 @@ var render = function() {
                   ),
                   _vm._v(" "),
                   _vm._l(_vm.cashflow, function(cf) {
-                    return _vm.filter_projects === -1 ||
-                      cf.project_id === _vm.filter_projects
+                    return _vm.checkFilter(cf.project_id, cf.tag, cf.final)
                       ? _c(
                           "tr",
                           _vm._l(cf, function(item, key) {

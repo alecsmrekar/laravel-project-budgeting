@@ -10967,14 +10967,29 @@ a.text-dark:focus {
   }
 }
 
-#cashflow_page #project_filter select {
+#cashflow_page select {
   max-width: -webkit-fit-content;
   max-width: -moz-fit-content;
   max-width: fit-content;
+  min-width: 200px;
 }
 
-#cashflow_page #project_filter * {
-  margin: 5px;
+#cashflow_page .filter {
+  margin-bottom: 5px;
+}
+
+#cashflow_page .filter span,
+#cashflow_page .filter select {
+  display: inline-block;
+}
+
+#cashflow_page .filter span {
+  width: 20%;
+  text-align: left;
+}
+
+#cashflow_page .filter span + select {
+  margin: 0 6% 0 4%;
 }
 
 #transactions_page .modal-body form {
