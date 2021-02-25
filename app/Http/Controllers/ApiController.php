@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CostLink;
 use Illuminate\Http\Request;
 use App\Models;
-use App\Http\Controllers;
 use App\Engines;
-use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpFoundation\Response;
 
 class ApiController extends Controller {
 
 
-    public function getAllCosts2(Request $request, $project_id) {
+    public function getAllCosts(Request $request, $project_id) {
         if (is_numeric($project_id)) {
             $project_id = intval($project_id);
             return CostController::get_costs($project_id);
@@ -33,7 +30,6 @@ class ApiController extends Controller {
     public function getCostTransactions(Request $request, $id) {
         if (is_numeric($id)) {
             $id = intval($id);
-            //$links = CostLink::link_cost_to_transactions(false, $id);
             $engine = new Engines\CashflowEngine(false, $id);
             return $engine->getTransactions();
         }
@@ -141,14 +137,6 @@ class ApiController extends Controller {
             return Models\Project::update_project($data);
         }
         return Response::HTTP_BAD_REQUEST;
-    }
-
-    public function getAllTransactions(Request $request) {
-        return Models\Transaction::read_all();
-    }
-
-    public function getHeaders(Request $request) {
-        return Models\Transaction::getHeaders();
     }
 
     public function getCashflow(Request $request) {

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Cost extends Model {
     use HasFactory;
 
+    // Get an array of all costs based on passed fitlers
     public static function get_cost_array($pid=false, $cid=false) {
         $data = [];
         $query = self::query();
@@ -26,6 +27,7 @@ class Cost extends Model {
         return $data;
     }
 
+    // Generates a name of a single cost
     public static function generate_service_title($item){
         $dep = $item['department'];
         $sector = $item['sector'];
@@ -74,19 +76,26 @@ class Cost extends Model {
         return $cost->getAttributes();
     }
 
+    // Create a new cost
     public static function create($data, $get_actuals = TRUE) {
         $cost = self::write($data, FALSE, $get_actuals);
         return CostController::read_one($cost['id'], $get_actuals);
     }
 
+    // Update a cost
     public static function update_cost($data, $get_actuals = TRUE) {
         $cost = self::find($data['id']);
         $cost = self::write($data, $cost, $get_actuals);
         return CostController::read_one($cost['id'], $get_actuals);
     }
 
+    // Delete a cost, but also check for links which need to be deleted
     public static function delete_cost($id) {
         $item = self::find($id);
+        $links = CostLink::link_cost_to_transactions(false, $id);
+        foreach ($links as $link) {
+            CostLink::delete_link($link['id']);
+        }
         $item->delete();
     }
 

@@ -141,7 +141,7 @@ export default {
             this.render = Object.keys(this.translate);
         },
         loadTransactions: function () {
-            axios.get('/api/transactions/all2')
+            axios.get('/api/transactions/all')
                 .then((response) => {
                     for (const item of response.data) {
                         this.transactions.push(item);

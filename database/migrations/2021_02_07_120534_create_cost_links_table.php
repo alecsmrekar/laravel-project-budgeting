@@ -18,9 +18,6 @@ class CreateCostLinksTable extends Migration
             $table->foreignId('cost_id')->constrained('costs');
             $table->foreignId('transaction_id');
             $table->string('provider');
-            $table->float('amount');
-            $table->string('currency')->default('EUR');
-            $table->text('comment')->nullable();
             $table->timestamps();
         });
     }

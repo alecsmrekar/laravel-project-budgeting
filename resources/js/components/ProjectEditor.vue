@@ -109,7 +109,7 @@ export default {
             return null;
         },
         loadTransactions: function () {
-            axios.get('/api/costs/all2/' + this.id)
+            axios.get('/api/costs/all/' + this.id)
                 .then((response) => {
                     for (const item of response.data) {
                         this.costs.push(item);
@@ -203,11 +203,11 @@ export default {
                     let row = {
                         'department': key_1,
                         'sector': key_2,
-                        'budget': row_2['budget'],
-                        'actuals': row_2['actuals'],
-                        'actuals_net': row_2['actuals_net'],
-                        'tax_part': row_2['tax_part'],
-                        'diff': row_2['diff'],
+                        'budget': row_2['budget'].toFixed(2),
+                        'actuals': row_2['actuals'].toFixed(2),
+                        'actuals_net': row_2['actuals_net'].toFixed(2),
+                        'tax_part': row_2['tax_part'].toFixed(2),
+                        'diff': row_2['diff'].toFixed(2),
                         'class': 3,
                     }
                     rows.push(row);
@@ -215,11 +215,11 @@ export default {
                 let row = {
                     'department': key_1,
                     'sector': 'All',
-                    'budget': row_1['budget'],
-                    'actuals': row_1['actuals'],
-                    'actuals_net': row_1['actuals_net'],
-                    'tax_part': row_1['tax_part'],
-                    'diff': row_1['diff'],
+                    'budget': row_1['budget'].toFixed(2),
+                    'actuals': row_1['actuals'].toFixed(2),
+                    'actuals_net': row_1['actuals_net'].toFixed(2),
+                    'tax_part': row_1['tax_part'].toFixed(2),
+                    'diff': row_1['diff'].toFixed(2),
                     'class': 2,
                 }
                 rows.push(row);
@@ -227,11 +227,11 @@ export default {
             let row = {
                 'department': 'Entire Project',
                 'sector': '',
-                'budget': this.aggregates['budget'],
-                'actuals': this.aggregates['actuals'],
-                'actuals_net': this.aggregates['actuals_net'],
-                'tax_part': this.aggregates['tax_part'],
-                'diff': this.aggregates['diff'],
+                'budget': this.aggregates['budget'].toFixed(2),
+                'actuals': this.aggregates['actuals'].toFixed(2),
+                'actuals_net': this.aggregates['actuals_net'].toFixed(2),
+                'tax_part': this.aggregates['tax_part'].toFixed(2),
+                'diff': this.aggregates['diff'].toFixed(2),
                 'class': 1,
             }
             rows.push(row);

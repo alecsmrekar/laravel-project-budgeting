@@ -1,14 +1,11 @@
 <?php
 
-
 namespace App\Engines;
 
 use App\Http\Controllers\ProviderController;
 use App\Models;
 use App\Models\Cost;
 use App\Models\Project;
-use function PHPUnit\Framework\isNull;
-
 
 class CashflowEngine {
 
@@ -41,6 +38,7 @@ class CashflowEngine {
         $this->get_cost_actuals_date();
     }
 
+    // Returns a list of transactions that underlay the actuals
     public function getTransactions() {
         $output = [];
         foreach ($this->links as $link) {
@@ -85,7 +83,7 @@ class CashflowEngine {
         $this->generate_transaction_calcs();
     }
 
-    // Calculates actuals fields for every linked trasanction
+    // Calculates actuals fields for every linked transaction
     private function generate_transaction_calcs() {
         // Add the transaction amounts
         foreach ($this->links as $ckey => $citem) {
@@ -209,8 +207,8 @@ class CashflowEngine {
         return $output;
     }
 
-    // Calculates the actuals for one cashflow item
-    private function calc_transaction($actuals, $budget, $tax_rate, $date, $tag='') {
+    // Calculates the actuals for one cashflow item and returns a standardized array
+    private function calc_transaction($actuals, $budget, $tax_rate, $date, $tag = '') {
         $actuals_net = round($actuals / (1 + $tax_rate), 2);
         $tax = round($actuals - $actuals_net, 2);
         $diff = $actuals + $budget;

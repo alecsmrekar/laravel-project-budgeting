@@ -24,8 +24,6 @@ class CostLinkFactory extends Factory
         return [
             'cost_id' => 1,
             'transaction_id' => 100,
-            'amount' => 100,
-            'currency' => 'EUR'
         ];
     }
 }

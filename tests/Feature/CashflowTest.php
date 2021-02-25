@@ -104,4 +104,40 @@ class CashflowTest extends TestCase {
             $this->assertArrayHasKey($key, $response_data[0]);
         }
     }
+
+    public function test_if_cashflow_engine_returns_transactions() {
+        $project = Project::factory()->create();
+        $cost = Cost::factory()->create([
+            'project_id' => 1,
+            'tax_rate' => 0.2,
+        ]);
+        $transaction = Revolut::factory()->create(['number' => 102, 'amount' => 0.5, 'time' =>$this->faker->date()]);
+        $link = CostLink::factory()->create([
+            'transaction_id' => 102,
+            'cost_id' => 1,
+            'provider' => 'Revolut',
+            'link_tag' => 'alfa'
+        ]);
+
+        $response = $this->actingAs($this->super_user)
+            ->getJson('/api/costs/get_transactions/id/1');
+
+        $response_data = $response->getOriginalContent();
+        $keys = [
+            'id',
+            'number',
+            'time',
+            'type',
+            'amount',
+            'account',
+            'counterparty',
+            'currency',
+            'provider'
+        ];
+        foreach ($keys as $key) {
+            $this->assertArrayHasKey($key, $response_data[0]);
+        }
+        $this->assertEquals(102, $response_data[0]['number']);
+        $this->assertEquals(0.5, $response_data[0]['amount']);
+    }
 }

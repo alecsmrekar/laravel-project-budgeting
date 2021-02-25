@@ -78,13 +78,10 @@ class CostLink extends Model {
         if ($link == FALSE) {
             $link = new self();
         }
-        // For the sum, we assume we'll use the entire sum of the linked cost
-        $cost = CostController::read_one($data['cost_id']);
 
         $link->cost_id = $data['cost_id'];
         $link->transaction_id = $data['transaction_id'];
         $link->provider = $data['provider'];
-        $link->amount = $cost['budget'];
         $link->link_tag = $data['link_tag'];
         $link->save();
         return self::obj_to_array($link);
