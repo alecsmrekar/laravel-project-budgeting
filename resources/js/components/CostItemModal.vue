@@ -32,12 +32,14 @@ export default {
             final: 0,
             comment: '',
             errors: [],
+            transactions: [],
         }
     },
     methods: {
         // Called on mounted: if modal_id is predetermined, load it
         loadCostItem() {
             if (this.modal_id !== -1) {
+                this.loadLinkedTransactions();
                 axios.get('/api/costs/id/' + this.modal_id)
                     .then((response) => {
                         this.department = response.data.department;
@@ -56,6 +58,15 @@ export default {
                         console.log(error);
                     });
             }
+        },
+        loadLinkedTransactions: function () {
+            axios.get('/api/costs/get_transactions/id/' + this.modal_id)
+                .then((response) => {
+                    this.transactions = response.data;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
         },
         // Deleted the DB entry and emits
         deleteClicked: async function () {
@@ -174,6 +185,14 @@ export default {
                         <div class="form_final"><label>Set cost to be final:</label>
                         <input type="checkbox" id="final" name="final" v-model="final"
                                :checked="final"></div>
+
+                        <div v-if="modal_id > -1" class="form_transactions">
+                            <span>Linked Transactions:</span><br>
+                            <div v-for="item in transactions">
+                                <span>{{item.provider + ' #' + item.number + ' (' + item.time + ')' + ': ' + item.counterparty  + ' ' + item.amount + ' ' + item.currency}} </span>
+                            </div>
+                        </div>
+
                     </div>
                     <div class="modal-footer">
                         <button @click="cancelClicked" type="button" class="btn btn-secondary" data-bs-dismiss="modal">

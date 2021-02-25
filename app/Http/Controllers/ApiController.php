@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CostLink;
 use Illuminate\Http\Request;
 use App\Models;
 use App\Http\Controllers;
@@ -24,6 +25,17 @@ class ApiController extends Controller {
         if (is_numeric($id)) {
             $id = intval($id);
             return CostController::read_one($id);
+        }
+        return Response::HTTP_BAD_REQUEST;
+    }
+
+    // todo write test
+    public function getCostTransactions(Request $request, $id) {
+        if (is_numeric($id)) {
+            $id = intval($id);
+            //$links = CostLink::link_cost_to_transactions(false, $id);
+            $engine = new Engines\CashflowEngine(false, $id);
+            return $engine->getTransactions();
         }
         return Response::HTTP_BAD_REQUEST;
     }

@@ -29,6 +29,7 @@ Route::post('/api/links/delete/{id}', 'App\Http\Controllers\ApiController@delete
 Route::get('/api/costs/all2/{id}', 'App\Http\Controllers\ApiController@getAllCosts2')->middleware('auth')->name('api_get_all_costs2');
 Route::get('/api/projects/tree/{id}', 'App\Http\Controllers\ApiController@getTree')->middleware('auth')->name('api_get_tree');
 Route::get('/api/costs/id/{id}', 'App\Http\Controllers\ApiController@getCost')->middleware('auth')->name('api_get_cost');
+Route::get('/api/costs/get_transactions/id/{id}', 'App\Http\Controllers\ApiController@getCostTransactions')->middleware('auth')->name('api_get_cost_transactions');
 Route::post('/api/costs/create', 'App\Http\Controllers\ApiController@createCost')->middleware('auth')->name('api_cost_create');
 Route::post('/api/costs/update/{id}', 'App\Http\Controllers\ApiController@updateCost')->middleware('auth')->name('api_cost_update');
 Route::post('/api/costs/delete/{id}', 'App\Http\Controllers\ApiController@deleteCost')->middleware('auth')->name('api_cost_delete');

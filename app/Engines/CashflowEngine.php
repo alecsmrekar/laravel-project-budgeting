@@ -41,6 +41,18 @@ class CashflowEngine {
         $this->get_cost_actuals_date();
     }
 
+    public function getTransactions() {
+        $output = [];
+        foreach ($this->links as $link) {
+            foreach ($this->transactions as $tr) {
+                if ($tr['provider'] == $link['provider'] && $tr['number'] == $link['transaction_id']) {
+                    array_push($output, $tr);
+                }
+            }
+        }
+        return $output;
+    }
+
     // Turns on the setting that indicates we want all cost data to be returned, not only actuals
     public function receiveAllCostData() {
         $this->return_all_cost_data = TRUE;

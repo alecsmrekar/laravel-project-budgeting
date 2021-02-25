@@ -2112,7 +2112,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       tax_rate: 0,
       "final": 0,
       comment: '',
-      errors: []
+      errors: [],
+      transactions: []
     };
   },
   methods: {
@@ -2121,6 +2122,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this = this;
 
       if (this.modal_id !== -1) {
+        this.loadLinkedTransactions();
         axios.get('/api/costs/id/' + this.modal_id).then(function (response) {
           _this.department = response.data.department;
           _this.sector = response.data.sector;
@@ -2137,6 +2139,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           console.log(error);
         });
       }
+    },
+    loadLinkedTransactions: function loadLinkedTransactions() {
+      var _this2 = this;
+
+      axios.get('/api/costs/get_transactions/id/' + this.modal_id).then(function (response) {
+        _this2.transactions = response.data;
+      })["catch"](function (error) {
+        console.log(error);
+      });
     },
     // Deleted the DB entry and emits
     deleteClicked: function () {
@@ -41024,7 +41035,42 @@ var render = function() {
                     }
                   }
                 })
-              ])
+              ]),
+              _vm._v(" "),
+              _vm.modal_id > -1
+                ? _c(
+                    "div",
+                    { staticClass: "form_transactions" },
+                    [
+                      _c("span", [_vm._v("Linked Transactions:")]),
+                      _c("br"),
+                      _vm._v(" "),
+                      _vm._l(_vm.transactions, function(item) {
+                        return _c("div", [
+                          _c("span", [
+                            _vm._v(
+                              _vm._s(
+                                item.provider +
+                                  " #" +
+                                  item.number +
+                                  " (" +
+                                  item.time +
+                                  ")" +
+                                  ": " +
+                                  item.counterparty +
+                                  " " +
+                                  item.amount +
+                                  " " +
+                                  item.currency
+                              ) + " "
+                            )
+                          ])
+                        ])
+                      })
+                    ],
+                    2
+                  )
+                : _vm._e()
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "modal-footer" }, [
