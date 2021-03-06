@@ -8,6 +8,7 @@ use App\Models;
 
 class ProviderController {
 
+    // Here we register all the providers
     static $register = [
         'Revolut' => Models\Revolut::class,
     ];
@@ -22,7 +23,7 @@ class ProviderController {
             $links = Models\CostLink::get_linked_transactions();
         }
         foreach (self::$register as $id=>$provider) {
-            $data = $provider::read_local_transactions2();
+            $data = $provider::read_local_transactions();
             if ($find_links) {
                 foreach ($data as $key => $transaction) {
                     $provider_id = $transaction['provider'];

@@ -21,15 +21,11 @@ class ProjectController extends Controller
         ]);
     }
 
-
-
     public function formSubmit(Request $request) {
         $this->validate(request(), [
             'name' => 'required|',
             'client' => 'required'
         ]);
-
-        # http://novate.co.uk/reusing-form-in-laravel-for-both-create-and-update/
 
         $post_data = $request->input();
         $data = [

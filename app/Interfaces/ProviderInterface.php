@@ -7,11 +7,5 @@ interface ProviderInterface {
 
     public static function get_table_id_field();
 
-    public static function get_all_actuals();
-
-    public static function get_project_actuals($pid);
-
-    public static function get_cost_actuals($cid);
-
     public static function read_local_transactions();
 }
