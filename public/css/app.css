@@ -11097,4 +11097,8 @@ a.text-dark:focus {
   max-width: 600px;
 }
 
+.card-body {
+  overflow: auto;
+}
+
 
