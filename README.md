@@ -34,4 +34,16 @@ The main pages are:
   - Filter based on project name, cost status and tag
   - Get aggregated amounts
 - Settings page
-  - Manage user roles 
+  - Manage user roles
+    
+##Howto
+### Create new user
+Run `php artisan tinker` and execute:
+```use Illuminate\Support\Facades\Hash;
+$user = new App\Models\User();
+$user->password = Hash::make('root');
+$user->email = 'root@root.com';
+$user->name = 'root';
+$user->role = 'super';
+$user->save();
+```
