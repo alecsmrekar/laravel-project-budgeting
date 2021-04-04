@@ -60,9 +60,15 @@ Stop the container:
 ./vendor/bin/sail down
 ```
 
+Setup the initial environment by running the Laravel migrations with:
+```
+./vendor/bin/sail migrate
+```
+
+
 Execute artisan commands:
 ```
 ./vendor/bin/sail artisan [command]
 ```
 
-PhpMyAdmin is running on pot 8080, username:root, pass:password.
+PhpMyAdmin is running on pot 8000, username:root, pass:password.
