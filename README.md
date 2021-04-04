@@ -1,6 +1,5 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
-
 ## About 
 
 This is an extendable project budget tracking framework build using Laravel and VueJS. 
@@ -36,10 +35,11 @@ The main pages are:
 - Settings page
   - Manage user roles
     
-##Howto
+## Howto
 ### Create new user
-Run `php artisan tinker` and execute:
-```use Illuminate\Support\Facades\Hash;
+Run `php artisan tinker` or `sail artisan tinker` (when using Docker) and execute:
+```
+use Illuminate\Support\Facades\Hash;
 $user = new App\Models\User();
 $user->password = Hash::make('root');
 $user->email = 'root@root.com';
@@ -47,3 +47,22 @@ $user->name = 'root';
 $user->role = 'super';
 $user->save();
 ```
+
+### Run Docker Environment
+Start the containers by running the command from the root folder.
+```
+./vendor/bin/sail up
+./vendor/bin/sail up -d # TO run in detached mode
+```
+
+Stop the container:
+```
+./vendor/bin/sail down
+```
+
+Execute artisan commands:
+```
+./vendor/bin/sail artisan [command]
+```
+
+PhpMyAdmin is running on pot 8080, username:root, pass:password.
